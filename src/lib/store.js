@@ -62,7 +62,7 @@ export default class Store {
 		this.allowedVendorIds = new Set(allowedVendorIds);
 		this.isConsentToolShowing = false;
 		this.isBannerShowing = false;
-
+		this.statistics = {};
 		this.updateVendorList(vendorList);
 		this.updateCustomPurposeList(customPurposeList);
 	}
@@ -263,6 +263,7 @@ export default class Store {
 	};
 
 	storeUpdate = () => {
+		this.summarize();
 		this.listeners.forEach(callback => callback(this));
 	};
 
@@ -277,15 +278,40 @@ export default class Store {
 		this.storeUpdate();
 	};
 
-	selectAllVendors = (isSelected) => {
+	selectAllVendors = (isSelected,byPurpose = null) => {
+
 		const {vendors = []} = this.vendorList || {};
+		console.dir(vendors);
+		console.dir(this.vendorConsentData);
 		const operation = isSelected ? 'add' : 'delete';
-		vendors.forEach(({id}) => this.vendorConsentData.selectedVendorIds[operation](id));
+		vendors.forEach((vendor) => {
+
+			if (byPurpose==null || (vendor.purposeIds && vendor.purposeIds.indexOf(byPurpose.id)>=0)) {
+				this.vendorConsentData.selectedVendorIds[operation](vendor.id);
+			}
+		});
 		this.storeUpdate();
 	};
+	summarize = () => {
+		this.statistics={};
+		const {vendors = []} = this.vendorList || {};
+		vendors.forEach((vendor) => {
+			let selected=this.vendorConsentData.selectedVendorIds.has(vendor.id);
+			vendor.purposeIds.forEach((purpose) => {
+				this.statistics[purpose] = this.statistics[purpose] || {count:0,allowed:0};
+				this.statistics[purpose].count++;
+				this.statistics[purpose].allowed+=(selected?1:0);
+			});
+		});
+		for(var k in this.statistics)
+			this.statistics[k].complete=this.statistics[k].count===this.statistics[k].allowed;
+		console.dir(this.statistics);
+	}
 
 	selectPurpose = (purposeId, isSelected) => {
+
 		const {selectedPurposeIds} = this.vendorConsentData;
+
 		if (isSelected) {
 			selectedPurposeIds.add(purposeId);
 		}
