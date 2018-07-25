@@ -26,6 +26,7 @@ export default class VendorList extends Component {
 			onBack
 		} = props;
 
+
 		return (
 			<div class={style.vendorList}>
 				<div class={style.header}>

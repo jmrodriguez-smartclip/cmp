@@ -39,6 +39,7 @@ export default class Details extends Component {
 	};
 
 	handlePurposeClick = purposeItem => {
+
 		this.setState({
 			selectedPurpose: purposeItem,
 			selectedPanelIndex: SECTION_VENDORS
@@ -76,8 +77,21 @@ export default class Details extends Component {
 			.map(vendor => ({
 				...vendor,
 				policyUrl: vendor.policyUrl.indexOf('://') > -1 ? vendor.policyUrl : `http://${vendor.policyUrl}`
-			}))
-			.sort(({name: n1}, {name: n2}) => n1.toLowerCase() === n2.toLowerCase() ? 0 : n1.toLowerCase() > n2.toLowerCase() ? 1 : -1);
+			}));
+
+		// Se duplican los custom vendors, para hacer que el id sea el vendorId, pero solo en la copia (no en el original)
+		store.customVendors.map(cVendor => {
+			let nv = {};
+			for (let k in cVendor)
+				nv[k] = cVendor[k];
+			nv.id = cVendor.vendorId;
+			formattedVendors.push(nv);
+		});
+		formattedVendors.sort(({name: n1}, {name: n2}) => n1.toLowerCase() === n2.toLowerCase() ? 0 : n1.toLowerCase() > n2.toLowerCase() ? 1 : -1);
+
+		let mergedSelection = new Set(selectedVendorIds);
+		store.customVendorsEnabled.forEach((v) => mergedSelection.add(v));
+
 
 		return (
 			<div class={style.details}>
@@ -85,6 +99,8 @@ export default class Details extends Component {
 					<Panel selectedIndex={selectedPanelIndex}>
 						<Summary
 							purposes={purposes}
+							customPurposes={props.store.filteredPublisherPurposes}
+							store={store}
 							onPurposeClick={this.handlePurposeClick}
 							onVendorListClick={this.handlePanelClick(SECTION_VENDOR_LIST)}
 							onPurposeListClick={this.handlePanelClick(SECTION_PURPOSE_LIST)}
@@ -101,8 +117,10 @@ export default class Details extends Component {
 							purposes={purposes}
 							selectVendor={selectVendor}
 							selectAllVendors={selectAllVendors}
-							selectedVendorIds={selectedVendorIds}
+							selectedVendorIds={mergedSelection}
 							selectedPurpose={selectedPurpose}
+							store={store}
+
 						/>
 					</Panel>
 				</div>
@@ -110,7 +128,8 @@ export default class Details extends Component {
 					{selectedPanelIndex > 0 &&
 					<Button class={style.back} onClick={this.handleBack}>&lt; <LocalLabel localizeKey='back'>Back</LocalLabel></Button>
 					}
-					<Button class={style.save} onClick={onSave}><LocalLabel localizeKey='save'>Continue Using Site</LocalLabel></Button>
+					<Button class={(selectedPanelIndex == 0 && style.save_full) || style.save}
+							onClick={onSave}><LocalLabel localizeKey='save'>Continue Using Site</LocalLabel></Button>
 				</div>
 			</div>
 		);

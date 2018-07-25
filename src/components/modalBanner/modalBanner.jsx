@@ -1,5 +1,5 @@
-import { h, Component } from 'preact';
-import style from './banner.less';
+import {h, Component} from 'preact';
+import style from './modalBanner.less';
 import Label from '../label/label';
 import Panel from '../panel/panel';
 import ChevronIcon from '../chevronicon/chevronicon';
@@ -13,24 +13,28 @@ class LocalLabel extends Label {
 const PANEL_COLLECTED = 0;
 const PANEL_PURPOSE = 1;
 
-const BANNER_OFFSET = 20;
-
-export default class Banner extends Component {
+export default class ModalBanner extends Component {
 
 	constructor(props) {
+
 		super(props);
 		this.state = {
 			isExpanded: false,
-			selectedPanelIndex: 0,
+			selectedPanelIndex: null,
 		};
 	}
 
 	handleInfo = (index) => () => {
-		const {isExpanded, selectedPanelIndex} = this.state;
-		this.setState({
-			selectedPanelIndex: index,
-			isExpanded: index !== selectedPanelIndex || !isExpanded
-		});
+		if (index == this.state.selectedPanelIndex) {
+			this.setState({isExpanded: false, selectedPanelIndex: null});
+		}
+		else {
+			const {isExpanded, selectedPanelIndex} = this.state;
+			this.setState({
+				selectedPanelIndex: index,
+				isExpanded: index !== selectedPanelIndex || !isExpanded
+			});
+		}
 	};
 
 	handleWindowClick = e => {
@@ -40,42 +44,26 @@ export default class Banner extends Component {
 	};
 
 	handleLearnMore = () => {
-		this.props.onShowModal(true);
+		this.props.controller.toggleModalShowing(true);
 	};
 
-	calculateBannerHeight = () => {
-		const {isExpanded} = this.state;
-		const {isShowing} = this.props;
-		const {bannerRef, messageRef} = this;
-		if (bannerRef) {
-			const bannerHeight = bannerRef.getBoundingClientRect().height;
-			const messageHeight = messageRef.getBoundingClientRect().height;
-			let bannerBottom = 0;
-			if (!isExpanded && isShowing) {
-				bannerBottom = messageHeight - bannerHeight;
-			}
-			else if (!isShowing) {
-				bannerBottom = -bannerHeight - BANNER_OFFSET;
-			}
-
-			if (bannerBottom !== this.state.bannerBottom) {
-				this.setState({bannerBottom});
-			}
-		}
-	};
 
 	render(props, state) {
-		const {isShowing, onSave} = props;
-		const {selectedPanelIndex, bannerBottom, isExpanded} = state;
-		this.calculateBannerHeight();
+		const {onSave, controller} = props;
+		const {selectedPanelIndex, isExpanded} = state;
+		const {isBannerShowing, isModalShowing} = controller;
 
 		return (
 			<div
-				ref={el => this.bannerRef = el}
-				class={style.banner}
-				style={{bottom: `${bannerBottom}px`}}
+				class={style.popup}
+				style={{display: isBannerShowing ? 'flex' : 'none'}}
 			>
-				<div class={style.content}>
+
+				<div
+					class={style.overlay}
+					onClick={this.handleClose}
+				/>
+				<div class={style.content} id="cmp-main-message">
 					<div
 						class={style.message}
 						ref={el => this.messageRef = el}
@@ -84,23 +72,40 @@ export default class Banner extends Component {
 							<LocalLabel localizeKey='title'>Ads help us run this site</LocalLabel>
 						</div>
 						<LocalLabel localizeKey='description'>
-						When you visit our site, pre-selected companies may access and use certain information on your device to serve relevant ads or personalized content.
+							When you visit our site, pre-selected companies may access and use certain information on
+							your device to serve relevant ads or personalized content.
 						</LocalLabel>
-						<div class={style.info}>
-							<a onClick={this.handleInfo(PANEL_COLLECTED)}>
-								<ChevronIcon class={[style.expand, selectedPanelIndex === PANEL_COLLECTED && isExpanded ? style.expanded : ''].join(' ')}  />
-							</a>
-							<LocalLabel localizeKey='links.data.title'>Information that may be used.</LocalLabel>
-							<a onClick={this.handleInfo(PANEL_PURPOSE)}>
-								<ChevronIcon class={[style.expand, selectedPanelIndex === PANEL_PURPOSE && isExpanded ? style.expanded : ''].join(' ')}  />
-							</a>
-							<LocalLabel localizeKey='links.purposes.title'>Purposes for storing information.</LocalLabel>
 
-							<a onClick={this.handleLearnMore}><LocalLabel localizeKey='links.manage'>Learn More</LocalLabel></a>
-							<a onClick={onSave}><LocalLabel localizeKey='links.accept'>Continue to site</LocalLabel></a>
+						<div className={style.info}>
+							<span class={style.learnMore}>
+								<a onClick={this.handleLearnMore}><LocalLabel localizeKey='links.manage'>Learn
+									More</LocalLabel>
+								</a>
+							</span>
+							<span class={style.accept}>
+								<a onClick={onSave}><LocalLabel localizeKey='links.accept'>Continue to site</LocalLabel></a>
+							</span>
 						</div>
+						{/* <div class={style.infoData}>
+							<span class={style.infoSpan}>
+								<a onClick={this.handleInfo(PANEL_COLLECTED)}>
+									<ChevronIcon
+										class={[style.expand, selectedPanelIndex === PANEL_COLLECTED && isExpanded ? style.expanded : ''].join(' ')}/>
+								</a>
+								<LocalLabel localizeKey='links.data.title'>Information that may be used.</LocalLabel>
+							</span>
+							<span class={style.infoSpan}>
+								<a onClick={this.handleInfo(PANEL_PURPOSE)}>
+									<ChevronIcon
+										class={[style.expand, selectedPanelIndex === PANEL_PURPOSE && isExpanded ? style.expanded : ''].join(' ')}/>
+								</a>
+								<LocalLabel
+									localizeKey='links.purposes.title'>Purposes for storing information.</LocalLabel>
+							</span>
+						</div> */}
 					</div>
-					<Panel
+
+					{/*<Panel
 						selectedIndex={selectedPanelIndex}
 						class={style.infoExpanded}>
 						<div class={style.infoExpanded}>
@@ -129,7 +134,7 @@ export default class Banner extends Component {
 								</ul>
 							</LocalLabel>
 						</div>
-					</Panel>
+					</Panel>*/}
 				</div>
 			</div>
 		);

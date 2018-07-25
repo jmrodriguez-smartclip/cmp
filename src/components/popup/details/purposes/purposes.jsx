@@ -73,7 +73,9 @@ export default class Purposes extends Component {
 		}
 	};
 
-
+	selectAll = () => {
+		console.log("llamado");
+	};
 	render(props, state) {
 
 		const {
@@ -102,6 +104,7 @@ export default class Purposes extends Component {
 				<div class={style.description}>
 					We and select companies may access and use your information for the below purposes. You may
 					customize your choices below or continue using our site if you're OK with the purposes.
+					<Switch onclick={this.selectAll}/>
 				</div>
 				<div class={style.purposeItems}>
 					{purposeItems.map(({title, description}) => (

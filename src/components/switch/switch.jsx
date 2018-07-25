@@ -7,9 +7,16 @@ export default class Switch extends Component {
 		onClick: () => {},
 	};
 
+	constructor(props) {
+		super(props);
+		this.state = {isSelected: props.isSelected, isDisabled: props.isDisabled};
+	}
 	handleClicked = () => {
-		const { onClick, dataId, isSelected } = this.props;
-		onClick({dataId, isSelected: !isSelected});
+		this.setState({isSelected: !this.props.isSelected}, () => {
+			this.props.onClick(this.props.dataId, this.state.isSelected);
+		});
+
+
 	};
 
 	shouldComponentUpdate(nextProps) {
@@ -18,23 +25,22 @@ export default class Switch extends Component {
 
 	render(props) {
 		const {
-			isSelected,
-			isDisabled,
 			color
 		} = props;
 
 		return (
 			<span
-				class={[style.switch, props.class, isSelected ? style.isSelected : ''].join(' ')}
-				onClick={this.handleClicked}
+				class={[style.switch, props.class, this.props.isSelected ? style.isSelected : ''].join(' ')}
+				onClick={this.handleClicked.bind(this)}
 			>
 				<input
-					checked={isSelected}
+					checked={this.props.isSelected}
 					className={style.native}
-					disabled={isDisabled}
+					disabled={this.state.isDisabled}
 					type='checkbox'
 				/>
-				<span class={style.visualizationContainer} style={{backgroundColor: isSelected ? color : null}} />
+				<span class={style.visualizationContainer}
+					  style={{backgroundColor: this.props.isSelected ? color : null}}/>
 				<span class={style.visualizationGlow} style={{backgroundColor: color}} />
 				<span class={style.visualizationHandle} />
 			</span>

@@ -30,6 +30,7 @@ function fetchGlobalVendorList() {
 }
 
 function fetchPurposeList() {
+
 	if (!config.storePublisherData || !config.customPurposeListLocation) {
 		return Promise.resolve();
 	}

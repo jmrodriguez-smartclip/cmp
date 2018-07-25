@@ -6,14 +6,13 @@ import Details from './details/details';
 export default class Popup extends Component {
 
 	handleClose = () => {
-		const {store} = this.props;
-		store.toggleModalShowing(false)
+		//const {store} = this.props;
+		//store.toggleModalShowing(false)
 	};
 
 	render(props, state) {
-		const {store, onSave} = props;
-		const {isModalShowing} = store;
-
+		const {store, onSave, controller} = props;
+		const {isModalShowing} = controller;
 		return (
 			<div
 				class={style.popup}

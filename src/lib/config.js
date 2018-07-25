@@ -7,10 +7,13 @@ const defaultConfig = {
 	storeConsentGlobally: false,
 	storePublisherData: false,
 	logging: false,
+	cookieAge: null,
+	cookieVersion: 1,
 	localization: {},
 	forceLocale: null,
 	gdprApplies: true,
-	allowedVendorIds: null
+	allowedVendorIds: null,
+	uimode: "modal"
 };
 
 class Config {

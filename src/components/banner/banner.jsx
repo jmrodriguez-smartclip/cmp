@@ -65,8 +65,10 @@ export default class Banner extends Component {
 	};
 
 	render(props, state) {
-		const {isShowing, onSave} = props;
+		const {controller, onSave} = props;
 		const {selectedPanelIndex, bannerBottom, isExpanded} = state;
+		const {isBannerShowing} = controller;
+
 		this.calculateBannerHeight();
 
 		return (

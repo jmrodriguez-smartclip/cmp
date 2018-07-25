@@ -19,6 +19,8 @@ export class Localize {
 		const localizedMap = this.processLocalized(localizedData);
 		const currentLocal = findLocale();
 		const [language] = currentLocal.split('-');
+		console.dir(translations);
+		console.dir(config.localization);
 		this.localizedValues = {
 			...localizedMap[language],
 			...localizedMap[currentLocal]

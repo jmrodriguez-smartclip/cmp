@@ -15,12 +15,18 @@ export default class Cmp {
 		this.store = store;
 		this.processCommand.receiveMessage = this.receiveMessage;
 		this.commandQueue = [];
+
+	}
+
+	setApp = (app) => {
+		this.app = app;
 	}
 
 	commands = {
 		/**
 		 * Get all publisher consent data from the data store.
 		 */
+
 		getPublisherConsents: (purposeIds, callback = () => {}) => {
 			const {
 				persistedPublisherConsentData,
@@ -133,13 +139,26 @@ export default class Cmp {
 				this.eventListeners = {};
 			}
 		},
+		/* Trigger the consent tool UI to be shown (banner)
+		 */
+		showConsentBanner: (show = true, callback = () => {
+		}) => {
+
+			this.app.toggleConsentToolShowing(show);
+			callback(show);
+		},
 
 		/**
-		 * Trigger the consent tool UI to be shown
+		 * Trigger the consent tool UI to be shown (popup)
 		 */
-		showConsentTool: (_, callback = () => {}) => {
-			this.store.toggleConsentToolShowing(true);
-			callback(true);
+		showConsentTool: (show = true, callback = () => {
+		}) => {
+
+
+			//this.app.toggleModalShowing(show);
+			this.app.toggleConsentToolShowing(show);
+
+			callback(show);
 		}
 	};
 

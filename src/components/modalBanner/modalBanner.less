@@ -1,57 +1,130 @@
 @import '../../style/variables.less';
 
+.popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99999;
+  justify-content: center;
+  align-items: center;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.content {
+  width: 650px;
+  //height: 700px;
+  background: white;
+  //display: flex;
+  align-items: center;
+  position: relative;
+
+  @media @smartphone {
+    width: 98%;
+    height: 98%;
+  }
+}
+
 .banner {
-	position: fixed;
-	right: 0;
-	left: 0;
-	bottom: -1000px;
-	z-index: 99999;
+  position: fixed;
+  right: 0;
+  left: 0;
+  bottom: -1000px;
+  z-index: 99999;
 
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	color: @color-textLight;
-	background: white;
-	font-size: 18px;
-	max-height: 100%;
-	transition: bottom 0.5s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: @color-textLight;
+  background: white;
+  font-size: 18px;
+  max-height: 100%;
+  transition: bottom 0.5s ease-in-out;
 
-	box-shadow: 0px 0px 5px @color-primary;
-	padding: 0 20px;
+  box-shadow: 0px 0px 5px @color-primary;
+  padding: 0 20px;
 
-	a {
-		text-decoration: underline;
-		padding: 0 4px;
-	}
+}
 
-	.title {
-		font-size: 24px;
-		color: @color-text;
-		padding: 20px 0;
-	}
-	.message {
-		padding: 20px 0;
-	}
+a {
+  text-decoration: underline;
+  padding: 0 4px;
+}
 
-	.expand {
-		padding: 0;
-		height: 20px;
-		fill: @color-primary;
-		transform: rotate(-90deg);
-		transition: 0.5s ease;
+.title {
+  font-size: 24px;
+  color: @color-text;
+  padding: 0px;
+  margin-bottom: 10px;
+}
 
-		&.expanded {
-			transform: rotate(0deg);
-		}
-	}
-	.info {
-		display: flex;
-	}
-	.infoExpanded {
-		padding: 0 10px 10px 10px;
-		min-height: 210px;
-		ul {
-			margin: 0;
-		}
-	}
+.message {
+  padding: 30px;
+}
+
+.expand {
+  padding: 0;
+  height: 20px;
+  fill: @color-primary;
+  transform: rotate(-90deg);
+  transition: 0.5s ease;
+
+  &.expanded {
+    transform: rotate(0deg);
+  }
+}
+
+.info {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.info, .infoData {
+  display: flex;
+}
+
+.learnMore, .accept {
+  display: block;
+  width: 50%;
+}
+
+.learnMore {
+  text-align: left
+}
+
+.accept {
+  text-align: right
+}
+
+.accept a {
+  display: block;
+  padding: 3px;
+  background-color: @color-primary;
+  color: white;
+  text-align: center;
+  margin-left: 50%;
+}
+
+.infoSpan span {
+  font-size: 12px;
+  position: relative;
+  top: -6px;
+}
+
+.infoExpanded {
+  padding: 0 20px 20px 30px;
+  min-height: 210px;
+  ul {
+    margin: 0;
+  }
 }

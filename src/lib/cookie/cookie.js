@@ -1,5 +1,6 @@
 import Promise from 'promise-polyfill';
 import log from '../log';
+
 import {
 	padRight,
 	encodeVendorCookieValue,
@@ -16,7 +17,6 @@ const PUBLISHER_CONSENT_COOKIE_NAME = 'pubconsent';
 const PUBLISHER_CONSENT_COOKIE_MAX_AGE = 33696000;
 
 const VENDOR_CONSENT_COOKIE_NAME = 'euconsent';
-const VENDOR_CONSENT_COOKIE_MAX_AGE = 33696000;
 
 
 function encodeVendorIdsToBits(maxVendorId, selectedVendorIds = new Set()) {
@@ -222,7 +222,7 @@ function writePublisherConsentCookie(publisherConsentData) {
 	log.debug('Write publisher consent data to local cookie', publisherConsentData);
 	writeCookie(PUBLISHER_CONSENT_COOKIE_NAME,
 		encodePublisherConsentData(publisherConsentData),
-		PUBLISHER_CONSENT_COOKIE_MAX_AGE,
+		config.cookieAge != null ? config.cookieAge : PUBLISHER_CONSENT_COOKIE_MAX_AGE,
 		'/');
 }
 
@@ -287,7 +287,7 @@ function writeLocalVendorConsentCookie(vendorConsentData) {
 	log.debug('Write consent data to local cookie', vendorConsentData);
 	return Promise.resolve(writeCookie(VENDOR_CONSENT_COOKIE_NAME,
 		encodeVendorConsentData(vendorConsentData),
-		VENDOR_CONSENT_COOKIE_MAX_AGE,
+		config.cookieAge != null ? config.cookieAge : PUBLISHER_CONSENT_COOKIE_MAX_AGE,
 		'/'));
 }
 

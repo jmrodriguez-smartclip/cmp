@@ -1,7 +1,8 @@
-import { writePublisherConsentCookie, writeVendorConsentCookie } from "./cookie/cookie";
+import {writePublisherConsentCookie, writeVendorConsentCookie, writeCookie} from "./cookie/cookie";
 import config from './config';
 import { findLocale } from './localize';
-
+import {fetchPubVendorList} from "./vendor";
+import {COOKIE_VERSION_COOKIE_NAME} from "init";
 /**
  * Copy a data object and make sure to replace references
  * of Set objects with new ones.
@@ -19,6 +20,8 @@ function copyData(dataObject) {
 	return copy;
 }
 
+export const MIN_CUSTOM_VENDOR_ID = 10000;
+
 export default class Store {
 	constructor({
 		cmpId = 1,
@@ -34,6 +37,10 @@ export default class Store {
 		// Keep track of data that has already been persisted
 		this.persistedVendorConsentData = copyData(vendorConsentData);
 		this.persistedPublisherConsentData = copyData(publisherConsentData);
+		this.customVendors = [];
+		this.customVendorsEnabled = new Set();
+		this.filteredPublisherPurposes = [];
+
 
 		this.vendorConsentData = Object.assign(
 			{
@@ -60,8 +67,7 @@ export default class Store {
 
 		this.pubVendorsList = pubVendorsList;
 		this.allowedVendorIds = new Set(allowedVendorIds);
-		this.isConsentToolShowing = false;
-		this.isBannerShowing = false;
+
 		this.statistics = {};
 		this.updateVendorList(vendorList);
 		this.updateCustomPurposeList(customPurposeList);
@@ -104,7 +110,7 @@ export default class Store {
 		// Map requested vendorIds
 		const vendorMap = {};
 		if (vendorIds && vendorIds.length) {
-			vendorIds.forEach(id => vendorMap[id] = selectedVendorIds.has(id) && (!allowedVendorIds.size || allowedVendorIds.has(id)));
+			vendorIds.forEach(id => vendorMap[id] = (selectedVendorIds.has(id) || (id >= MIN_CUSTOM_VENDOR_ID) && (allowedVendorIds.has(id) || this.customVendorsEnabled.has(id))));
 		}
 		else {
 			// In case the vendor list has not been loaded yet find the highest
@@ -202,6 +208,7 @@ export default class Store {
 		};
 	};
 
+
 	/**
 	 * Persist all consent data to the cookie.  This data will NOT be filtered
 	 * by the vendorList and will include global consents set no matter what
@@ -218,6 +225,8 @@ export default class Store {
 		const {
 			vendorListVersion = 1
 		} = vendorList || {};
+		// Se escribe la cookie de la version de cookie
+		writeCookie(COOKIE_VERSION_COOKIE_NAME, config.cookieVersion, 365 * 24 * 60 * 60);
 
 		// Update modification dates and write the cookies
 		const now = new Date();
@@ -263,50 +272,47 @@ export default class Store {
 	};
 
 	storeUpdate = () => {
-		this.summarize();
 		this.listeners.forEach(callback => callback(this));
 	};
 
 	selectVendor = (vendorId, isSelected) => {
-		const {selectedVendorIds} = this.vendorConsentData;
-		if (isSelected) {
-			selectedVendorIds.add(vendorId);
+		if (vendorId < MIN_CUSTOM_VENDOR_ID) {
+			const {selectedVendorIds} = this.vendorConsentData;
+			if (isSelected) {
+				selectedVendorIds.add(vendorId);
+			}
+			else {
+				selectedVendorIds.delete(vendorId);
+			}
 		}
 		else {
-			selectedVendorIds.delete(vendorId);
+			let found = this.customVendors.filter((item) => item.vendorId == vendorId);
+			if (found.length == 1) {
+				// Recuperamos el id original, que esta copiado en _id
+				this.selectCustomPurpose(found[0]._id, isSelected);
+			}
 		}
 		this.storeUpdate();
+
 	};
 
 	selectAllVendors = (isSelected,byPurpose = null) => {
 
 		const {vendors = []} = this.vendorList || {};
-		console.dir(vendors);
-		console.dir(this.vendorConsentData);
 		const operation = isSelected ? 'add' : 'delete';
-		vendors.forEach((vendor) => {
+		if (byPurpose != null)
+			this.vendorConsentData.selectedPurposeIds[operation](byPurpose.id);
 
+		vendors.forEach((vendor) => {
 			if (byPurpose==null || (vendor.purposeIds && vendor.purposeIds.indexOf(byPurpose.id)>=0)) {
 				this.vendorConsentData.selectedVendorIds[operation](vendor.id);
 			}
 		});
+		console.dir(this.vendorConsentData);
+		this.customVendors.map((item) => this.selectCustomPurpose(item._id, isSelected));
 		this.storeUpdate();
 	};
-	summarize = () => {
-		this.statistics={};
-		const {vendors = []} = this.vendorList || {};
-		vendors.forEach((vendor) => {
-			let selected=this.vendorConsentData.selectedVendorIds.has(vendor.id);
-			vendor.purposeIds.forEach((purpose) => {
-				this.statistics[purpose] = this.statistics[purpose] || {count:0,allowed:0};
-				this.statistics[purpose].count++;
-				this.statistics[purpose].allowed+=(selected?1:0);
-			});
-		});
-		for(var k in this.statistics)
-			this.statistics[k].complete=this.statistics[k].count===this.statistics[k].allowed;
-		console.dir(this.statistics);
-	}
+
 
 	selectPurpose = (purposeId, isSelected) => {
 
@@ -330,39 +336,31 @@ export default class Store {
 
 	selectCustomPurpose = (purposeId, isSelected) => {
 		const {selectedCustomPurposeIds} = this.publisherConsentData;
-		if (isSelected) {
-			selectedCustomPurposeIds.add(purposeId);
-		}
-		else {
-			selectedCustomPurposeIds.delete(purposeId);
-		}
+		let found = this.customPurposeList.purposes.filter((item) => {
+			return (item._id == purposeId || item.id == purposeId);
+		});
+		if (found.length == 0)
+			return;
+		let op = isSelected ? "add" : "delete";
+
+		selectedCustomPurposeIds[op](purposeId);
+		if (found[0].type == "vendor")
+			this.customVendorsEnabled[op](found[0].vendorId);
+
 		this.storeUpdate();
 	};
 
 	selectAllCustomPurposes = (isSelected) => {
 		const {purposes = []} = this.customPurposeList || {};
 		const operation = isSelected ? 'add' : 'delete';
-		purposes.forEach(({id}) => this.publisherConsentData.selectedCustomPurposeIds[operation](id));
+		purposes.forEach((obj) => {
+			if (obj.type != "vendor")
+				this.publisherConsentData.selectedCustomPurposeIds[operation](obj.id);
+
+		});
 		this.storeUpdate();
 	};
 
-	toggleConsentToolShowing = (isShown) => {
-		this.isBannerShowing = typeof isShown === 'boolean' ? isShown : !this.isBannerShowing;
-		this.isModalShowing = false;
-		this.isFooterShowing = false;
-		this.storeUpdate();
-	};
-
-	toggleModalShowing = (isShown) => {
-		this.isModalShowing = typeof isShown === 'boolean' ? isShown : !this.isModalShowing;
-		this.storeUpdate();
-	};
-
-	toggleFooterShowing = (isShown) => {
-		this.isFooterShowing = typeof isShown === 'boolean' ? isShown : !this.isFooterShowing;
-		this.isModalShowing = false;
-		this.storeUpdate();
-	};
 
 	updateVendorList = vendorList => {
 
@@ -401,6 +399,7 @@ export default class Store {
 		this.storeUpdate();
 	};
 
+
 	updateCustomPurposeList = customPurposeList => {
 		const {created} = this.publisherConsentData;
 
@@ -409,11 +408,27 @@ export default class Store {
 			const {purposes = [],} = customPurposeList || {};
 			this.publisherConsentData.selectedCustomPurposeIds = new Set(purposes.map(p => p.id));
 		}
+		const consentData = this.publisherConsentData;
 
 		const {version = 1} = customPurposeList || {};
 		this.publisherConsentData.publisherPurposeVersion = version;
-
 		this.customPurposeList = customPurposeList;
+		if (customPurposeList) {
+			this.filteredPublisherPurposes = customPurposeList.purposes.filter((item) => {
+				if (item.type == "vendor" && parseInt(item.vendorId) >= MIN_CUSTOM_VENDOR_ID) {
+					// Se sobreescribe el id con el vendor id para hacer mas facil el resto del código.
+					// Esto luego hay que gestionarlo al escribir o leer los customPurposes.
+					item._id = item.id;
+					//item.id=item.vendorId;
+					this.customVendors.push(item);
+					if (consentData.selectedCustomPurposeIds.has(item.id))
+						this.customVendorsEnabled.add(parseInt(item.vendorId));
+					return false;
+				}
+				return true;
+			});
+
+		}
 		this.storeUpdate();
 	};
 }

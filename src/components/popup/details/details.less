@@ -5,6 +5,7 @@
 	flex-direction: column;
 	flex: 1;
 	height: 100%;
+  width: 100%;
 
 	.body {
 		flex: 1;
@@ -19,6 +20,11 @@
 		border-top: 1px solid @color-border;
 	}
 	.save {
+      background: @color-buttonSuccess;
+      border-radius: 0;
+      flex: 0 1 50%;
+    }
+  .save_full {
 		background: @color-buttonSuccess;
 		border-radius: 0;
 		flex: 1;
@@ -26,7 +32,7 @@
 	.back {
 		background: @color-primary;
 		border-radius: 0;
-		flex: 1;
+      flex: 0 1 50%;
 	}
 }
 

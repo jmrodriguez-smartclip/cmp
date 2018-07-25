@@ -3,14 +3,20 @@
   "purposes": [
 	{
 	  "id": 1,
-	  "name": "0AACustom Purpose 1",
-		"description":"My description",
-		"type":"vendor",
-		"vendorId":10000,
-		"policyUrl":"www.adcolony.com/privacy-policy",
-		"featureIds":[],
-		"purposeIds":[1,2,3,4,5],
-		"legIntPurposeIds":[]
+		"name": "0AACustom Purpose 1",
+		"description": "My description",
+		"type": "vendor",
+		"vendorId": 10000,
+		"policyUrl": "www.adcolony.com/privacy-policy",
+		"featureIds": [],
+		"purposeIds": [
+			1,
+			2,
+			3,
+			4,
+			5
+		],
+		"legIntPurposeIds": []
 	},
 	{
 	  "id": 2,

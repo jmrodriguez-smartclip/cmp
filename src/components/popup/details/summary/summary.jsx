@@ -2,6 +2,9 @@ import { h, Component } from 'preact';
 import style from './summary.less';
 import detailsStyle from '../details.less';
 import Label from "../../../label/label";
+import Button from "../../../button/button";
+import Switch from '../../../switch/switch';
+import config from '../../../../lib/config';
 
 class SummaryLabel extends Label {
 	static defaultProps = {
@@ -17,11 +20,17 @@ class PurposesLabel extends Label {
 export default class VendorList extends Component {
 	constructor(props) {
 		super(props);
+		this.state = {
+			selectedPurposes: this.props.store.selectedPurposeIds,
+			selectedCustomPurposes: this.props.store.publisherConsentData.selectedCustomPurposeIds
+		};
 	}
+
 
 	static defaultProps = {
 		vendors: [],
 	};
+
 
 	handlePurposeItemClick = purposeItem => {
 		return () => {
@@ -29,13 +38,45 @@ export default class VendorList extends Component {
 		};
 	};
 
+	/* Test 2*/
+	handlePurposeChange = (customPurpose) => {
+		return (dataId, isSelected) => {
+			this.props.store.selectAllVendors(isSelected, customPurpose);
+		};
+	};
+	handleCustomPurposeChange = (customPurpose) => {
+		return (dataId, isSelected) => {
+			this.props.store.selectCustomPurpose(customPurpose.id, isSelected);
+		};
+	};
+
+	renderCustomPurposes(customPurposes) {
+		if (customPurposes.length == 0)
+			return <span/>;
+		return (
+			<div class={style.purposeItems}>
+				{customPurposes.map((item) => (
+					<div class={style.purposeItem}>
+						<span className={style.purposeTitle}>
+							{item.name}
+						</span>
+						<Switch
+							dataId={item.id}
+							isSelected={this.props.store.publisherConsentData.selectedCustomPurposeIds.has(item.id)}
+							onClick={this.handleCustomPurposeChange(item)}
+						/>
+					</div>
+				))}
+			</div>
+		);
+	}
 	render(props, state)
 	{
 		const {
 			purposes,
-			onVendorListClick,
-			onPurposeListClick,
+			customPurposes
 		} = props;
+
 
 		return (
 			<div class={style.summary}>
@@ -51,32 +92,23 @@ export default class VendorList extends Component {
 				<div class={style.purposeItems}>
 					{purposes.map((purposeItem, index) => (
 						<div class={style.purposeItem}>
-							<span class={style.purposeTitle}><PurposesLabel localizeKey={`purpose${purposeItem.id}.menu`}>{purposeItem.name}</PurposesLabel></span>
-							<a class={style.learnMore} onClick={this.handlePurposeItemClick(purposeItem)}>
-								<SummaryLabel localizeKey='detailLink'>Learn More & Set Preferences</SummaryLabel>
-							</a>
+							<span class={style.purposeTitle}>
+								<a onClick={this.handlePurposeItemClick(purposeItem)}>
+									<PurposesLabel
+										localizeKey={`purpose${purposeItem.id}.menu`}>{purposeItem.name}</PurposesLabel>
+								</a>
+							</span>
+							<Switch
+								dataId={purposeItem.id}
+
+								isSelected={this.props.store.vendorConsentData.selectedPurposeIds.has(purposeItem.id)}
+								onClick={this.handlePurposeChange(purposeItem)}
+							/>
 						</div>
 					))}
 				</div>
-				<div class={detailsStyle.title}>
-					<SummaryLabel localizeKey='who.title'>Who is using this information?</SummaryLabel>
-				</div>
-				<div class={detailsStyle.description}>
-					<SummaryLabel localizeKey='who.description'>
-						We and pre-selected companies will use your information. You can see each company in
-						the links above or
-					</SummaryLabel>&nbsp;
-					<a onClick={onVendorListClick}><SummaryLabel localizeKey='who.link'>see the complete list here.</SummaryLabel></a>
-				</div>
-				<div class={detailsStyle.title}>
-					<SummaryLabel localizeKey='what.title'>What information is being used?</SummaryLabel>
-				</div>
-				<div class={detailsStyle.description}>
-					<SummaryLabel localizeKey='what.description'>
-						Different companies use different information,
-					</SummaryLabel>&nbsp;
-					<a onClick={onPurposeListClick}><SummaryLabel localizeKey='what.link'>see the complete list here.</SummaryLabel></a>
-				</div>
+				{this.renderCustomPurposes(customPurposes)}
+
 			</div>
 		);
 	}

@@ -3,7 +3,9 @@ import style from './vendors.less';
 import detailsStyle from '../details.less';
 import Switch from '../../../switch/switch';
 import Label from "../../../label/label";
-import ExternalLinkIcon from '../../../externallinkicon/externallinkicon'
+import MIN_CUSTOM_VENDOR_ID from "../../../../lib/store";
+
+//import ExternalLinkIcon from '../../../externallinkicon/externallinkicon'
 
 class VendorsLabel extends Label {
 	static defaultProps = {
@@ -20,7 +22,9 @@ export default class Vendors extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			isSelectAll: true
+			isSelectAll: true,
+			selectedVendors: props.store.vendorConsentData.selectedVendorIds,
+			selectedPurposes: props.store.publisherConsentData.selectedCustomPurposeIds
 		};
 	}
 
@@ -33,11 +37,12 @@ export default class Vendors extends Component {
 	};
 
 	handleAcceptAll = () => {
-		this.props.selectAllVendors(true);
+		this.props.selectAllVendors(true, this.props.selectedPurpose);
+
 	};
 
 	handleRejectAll = () => {
-		this.props.selectAllVendors(false);
+		this.props.selectAllVendors(false, this.props.selectedPurpose);
 	};
 
 	handleToggleAll = () => {
@@ -46,7 +51,7 @@ export default class Vendors extends Component {
 		this.setState({isSelectAll: !isSelectAll});
 	};
 
-	handleSelectVendor = ({dataId, isSelected}) => {
+	handleSelectVendor = (dataId, isSelected) => {
 		this.props.selectVendor(dataId, isSelected);
 	};
 
@@ -65,9 +70,13 @@ export default class Vendors extends Component {
 			description
 		} = selectedPurpose;
 
-		const validVendors = vendors
-			.filter(({legIntPurposeIds = [], purposeIds = []}) => legIntPurposeIds.indexOf(selectedPurposeId) > -1 || purposeIds.indexOf(selectedPurposeId) > -1);
 
+		const validVendors = vendors
+			.filter(({legIntPurposeIds = [], purposeIds = [], id}) => {
+				return id >= MIN_CUSTOM_VENDOR_ID ||
+					legIntPurposeIds.indexOf(selectedPurposeId) > -1
+					|| purposeIds.indexOf(selectedPurposeId) > -1;
+			});
 
 		return (
 			<div class={style.vendors}>
@@ -93,24 +102,28 @@ export default class Vendors extends Component {
 						<tbody>
 							{validVendors.map(({id, name, purposeIds, policyUrl, policyUrlDisplay}, index) => (
 								<tr key={id} class={index % 2 === 0 ? style.even : ''}>
-									<td>
-										<div class={style.vendorName}>
-											{name}
-											<a href={policyUrl} class={style.policy} target='_blank'><ExternalLinkIcon /></a>
-										</div>
-									</td>
 									<td class={style.allowColumn}>
 										{purposeIds.indexOf(selectedPurpose.id) > -1 ?
 											<span class={style.allowSwitch}>
-												<VendorsLabel localizeKey='accept'>Allow</VendorsLabel> <Switch
+												<Switch
 													dataId={id}
 													isSelected={selectedVendorIds.has(id)}
 													onClick={this.handleSelectVendor}
 												/>
 											</span> :
-											<VendorsLabel localizeKey='optOut'>requires opt-out</VendorsLabel>
+											<a href={policyUrl} class={style.policy} target='_blank'><VendorsLabel
+												localizeKey='optOut'>requires opt-out</VendorsLabel></a>
 										}
 									</td>
+
+									<td>
+										<a href={policyUrl} class={style.policy} target='_blank'>
+											<div class={style.vendorName}>
+												{name}
+											</div>
+										</a>
+									</td>
+
 								</tr>
 							))}
 						</tbody>
