@@ -12,6 +12,9 @@ const defaultConfig = {
 	localization: {},
 	forceLocale: null,
 	gdprApplies: true,
+	gdprAppliesGlobally: false,
+	allowedVendorIds: null,
+	theme: {}
 	allowedVendorIds: null,
 	uimode: "modal"
 };

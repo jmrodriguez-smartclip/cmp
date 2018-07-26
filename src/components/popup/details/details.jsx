@@ -52,12 +52,22 @@ export default class Details extends Component {
 			onSave,
 			onClose,
 			store,
+			theme,
 		} = props;
 		const {
 			selectedPanelIndex,
 			selectedPurpose
 		} = state;
 
+		const {
+			backgroundColor,
+			textLightColor,
+			dividerColor,
+			secondaryColor,
+			secondaryTextColor,
+			primaryColor,
+			primaryTextColor,
+		} = theme;
 		const {
 			vendorList = {},
 			customPurposeList = {},
@@ -94,7 +104,7 @@ export default class Details extends Component {
 
 
 		return (
-			<div class={style.details}>
+			<div class={style.details} style={{backgroundColor: backgroundColor, color: textLightColor}}>
 				<div class={style.body}>
 					<Panel selectedIndex={selectedPanelIndex}>
 						<Summary
@@ -104,13 +114,16 @@ export default class Details extends Component {
 							onPurposeClick={this.handlePurposeClick}
 							onVendorListClick={this.handlePanelClick(SECTION_VENDOR_LIST)}
 							onPurposeListClick={this.handlePanelClick(SECTION_PURPOSE_LIST)}
+							theme={theme}
 						/>
 						<VendorList
 							vendors={formattedVendors}
 							onBack={this.handleBack}
+							theme={theme}
 						/>
 						<PurposeList
 							onBack={this.handleBack}
+							theme={theme}
 						/>
 						<Vendors
 							vendors={formattedVendors}
@@ -121,15 +134,22 @@ export default class Details extends Component {
 							selectedPurpose={selectedPurpose}
 							store={store}
 
+							theme={theme}
 						/>
 					</Panel>
 				</div>
-				<div class={style.footer}>
+				<div class={style.footer} style={{borderColor: dividerColor}}>
 					{selectedPanelIndex > 0 &&
-					<Button class={style.back} onClick={this.handleBack}>&lt; <LocalLabel localizeKey='back'>Back</LocalLabel></Button>
+					<Button
+						class={style.back}
+						onClick={this.handleBack}
+						backgroundColor={secondaryColor}
+						textColor={secondaryTextColor}
+					>&lt; <LocalLabel localizeKey='back'>Back</LocalLabel></Button>
 					}
 					<Button class={(selectedPanelIndex == 0 && style.save_full) || style.save}
-							onClick={onSave}><LocalLabel localizeKey='save'>Continue Using Site</LocalLabel></Button>
+							backgroundColor={primaryColor}
+							textColor={primaryTextColor} onClick={onSave}><LocalLabel localizeKey='save'>Continue Using Site</LocalLabel></Button>
 				</div>
 			</div>
 		);

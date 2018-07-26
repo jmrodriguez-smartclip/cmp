@@ -74,13 +74,21 @@ export default class VendorList extends Component {
 	{
 		const {
 			purposes,
-			customPurposes
+			customPurposes,
+			onVendorListClick,
+			onPurposeListClick,
+			theme
 		} = props;
 
+		const {
+			textColor,
+			dividerColor,
+			textLinkColor
+		} = theme;
 
 		return (
 			<div class={style.summary}>
-				<div class={detailsStyle.title}>
+				<div class={detailsStyle.title} style={{color: textColor}}>
 					<SummaryLabel localizeKey='title'>Learn more about how information is being used?</SummaryLabel>
 				</div>
 				<div class={detailsStyle.description}>
@@ -91,9 +99,9 @@ export default class VendorList extends Component {
 				</div>
 				<div class={style.purposeItems}>
 					{purposes.map((purposeItem, index) => (
-						<div class={style.purposeItem}>
+						<div class={style.purposeItem} style={{borderColor: dividerColor}}>
 							<span class={style.purposeTitle}>
-								<a onClick={this.handlePurposeItemClick(purposeItem)}>
+								<a onClick={this.handlePurposeItemClick(purposeItem)} style={{color: textLinkColor}}>
 									<PurposesLabel
 										localizeKey={`purpose${purposeItem.id}.menu`}>{purposeItem.name}</PurposesLabel>
 								</a>

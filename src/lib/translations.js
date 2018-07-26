@@ -89,13 +89,28 @@ export default {
 			description: 'Utilizamos "cookies" propias y de terceros para elaborar información estadística y mostrarle publicidad personalizada a través del análisis de su navegación. Si continúa navegando acepta su uso.',
 			links: {
 				data: {
-					title: 'Titulo de data',
-					description: 'Esta seria la descripcion'
+					title: 'Información que puede ser usada.',
+					description: `Información que puede ser usada:
+								<ul>
+									<li>Tipo de navegador y su configuración</li>
+									<li>Información sobre el sistema operativo del dispositivo</li>
+									<li>Información sobre las cookies</li>
+									<li>Información sobre otros identificadores asignados al dispositivo</li>
+									<li>Dirección IP desde la cual el dispositivo accede al sitio web o aplicación móvil</li>
+									<li>Información sobre la actividad del usuario en ese dispositivo, incluidas las páginas web y las aplicaciones móviles visitadas o utilizadas</li>
+									<li>Información sobre la ubicación geográfica del dispositivo cuando accede a un sitio web o aplicación móvil</li>
+								</ul>`
 				},
 				purposes: {
-					title: 'Titulo de purposes',
-
-					description: ''
+					title: 'Propósitos para almacenar información.',
+					description: `Cómo puede ser usada la información:
+								<ul>
+									<li>Almacenamiento y acceso a la información</li>
+									<li>Selección de anuncios y entrega</li>
+									<li>Selección de contenido y entrega</li>
+									<li>Personalización</li>
+									<li>Medición</li>
+								</ul>`
 				},
 				manage: 'Leer más',
 				accept: 'Aceptar'

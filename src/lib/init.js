@@ -75,8 +75,9 @@ export function init(configUpdates) {
 			cmp.isLoaded = true;
 			cmp.notify('isLoaded');
 
-
-			render(<App store={store} cmp={cmp} notify={cmp.notify}/>, document.body);
+			// Render the UI
+			const App = require('../components/app').default;
+			render(<App store={store} theme={config.theme} notify={cmp.notify} />, document.body);
 
 
 			// Execute any previously queued command
@@ -90,7 +91,6 @@ export function init(configUpdates) {
 			]).then(() => {
 				cmp.cmpReady = true;
 				cmp.notify('cmpReady');
-
 			}).catch(err => {
 				log.error('Failed to load lists. CMP not ready', err);
 			});

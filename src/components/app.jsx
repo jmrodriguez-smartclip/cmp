@@ -6,6 +6,10 @@ import ModalBanner from './modalBanner/modalBanner';
 import config from '../lib/config';
 
 export default class App extends Component {
+	static defaultProps = {
+		theme: {}
+	};
+
 	constructor(props) {
 
 		super(props);
@@ -61,6 +65,9 @@ export default class App extends Component {
 		const {
 			store,
 		} = state;
+		const {
+			theme,
+		} = props;
 
 
 		return (
@@ -69,6 +76,7 @@ export default class App extends Component {
 					onSave={this.onSave}
 					controller={this}
 					onShowModal={this.toggleModalShowing}
+					theme={theme}
 				/> : <Banner
 					onSave={this.onSave}
 					controller={this}
@@ -76,6 +84,7 @@ export default class App extends Component {
 				}
 				<Popup store={store} controller={this}
 					   onSave={this.onSave}
+					   theme={theme}
 				/>
 			</div>
 		);
