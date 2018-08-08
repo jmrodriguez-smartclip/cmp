@@ -14,8 +14,7 @@ const defaultConfig = {
 	gdprApplies: true,
 	gdprAppliesGlobally: false,
 	allowedVendorIds: null,
-	theme: {}
-	allowedVendorIds: null,
+	theme: {},
 	uimode: "modal"
 };
 

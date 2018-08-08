@@ -6,15 +6,15 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimal-ui">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<script>
-		(function(window) {
-			window.__cmp = (function() {
+		(function (window) {
+			window.__cmp = (function () {
 				var listen = window.attachEvent || window.addEventListener;
-				listen('message', function(event) {
+				listen('message', function (event) {
 					window.__cmp.receiveMessage(event);
 				});
 
 				var commandQueue = [];
-				var cmp = function(command, parameter, callback) {
+				var cmp = function (command, parameter, callback) {
 					commandQueue.push({
 						command: command,
 						parameter: parameter,
@@ -22,7 +22,7 @@
 					});
 				};
 				cmp.commandQueue = commandQueue;
-				cmp.receiveMessage = function(event) {
+				cmp.receiveMessage = function (event) {
 					let data = event && event.data && event.data.__cmpCall;
 					if (data) {
 						commandQueue.push({
@@ -45,15 +45,6 @@
 									title: '<div style="background-color:#F0F0F0">Bienvenido a <img src="http://publishers.smartclip-services.com/wp-content/uploads/2018/04/Smartnews-1.png" width="150" style="position:relative;top:2px;left:6px"></div>',
 									description: '<div style="font-size:14px"><div style="margin-top:4px;">La web donde informar a nuestros publishers de las últimas novedades en nuestra red, noticias sobre publicidad digital, y resolver dudas de integración de nuestros formatos.</div><div style="margin-top:10px">Para construir esta web, utilizamos servicios de terceros para medición y personalización de contenido y publicidad.<br>Puedes dar permiso para el uso de estos servicios, o establecer tus preferencias en la página de configuración de privacidad.  </div></div>',
 									links: {
-										data: {
-											title: 'Titulo de data',
-											description: 'Esta seria la descripcion'
-										},
-										purposes: {
-											title: 'Titulo de purposes',
-
-											description: ''
-										},
 										manage: 'Configuración',
 										accept: 'Aceptar'
 									}
@@ -65,7 +56,7 @@
 								},
 								summary: {
 									title: 'Información utilizada.',
-									description: 'Esta web utiliza servicios propios y de terceros, que pueden acceder a información que hayas cedido, y recopilar nuevos datos como el tipo de dispositivo, navegador, páginas visitadas, dirección IP..<br>Los propósitos para los que se usa esta información, son los siguientes:',
+									description: 'Esta web utiliza servicios propios y de terceros, que pueden acceder a información que hayas cedido, y recopilar nuevos datos como el tipo de dispositivo, navegador, páginas visitadas, dirección IP..<br>Los propósitos para los que se usa esta información, son los siguientes:<div style="text-align:right;font-size:.90em;font-style: italic">(Haz click para ver los proveedores de servicios)</div>',
 
 									detailLink: 'Más información',
 									who: {
@@ -77,7 +68,8 @@
 										title: '¿Qué información está siendo utilizada?',
 										description: 'Diferentes compañías usan información diferente,',
 										link: 'mira la lista completa aquí.'
-									}
+									},
+									customPurposesDescription: "Nuestro site puede necesitar que nos permitas:"
 								},
 								purposes: {
 									title: 'Datos recolectados',
@@ -131,26 +123,63 @@
 									back: 'Atrás'
 								}
 							}
+						},
+					theme:
+						{
+							overlayBackground: "black",
+							primaryColor: "",
+							primaryTextColor: "white",
+							secondaryColor: "",
+							secondaryTextColor: "",
+							textLinkColor: "",
+							backgroundColor: "white",
+							textColor: "",
+							textLightColor: "",
+							dividerColor: ""
 						}
 				};
 				return cmp;
 			}());
 		})(window);
 
+		/*__cmp('getPublisherConsents', null, function (o) {
+            console.log("PUBLISHER CONSENTS");
+            console.dir(o);
+        });
+        __cmp('getVendorList', null, function (o) {
+            console.log("TENGO VENDOR LIST");
+        });
+        __cmp('getVendorConsents', [10000], function (o) {
+            console.log("PERMISOS DEL CUSTOM::") ;
+            console.dir(o);
+        });*/
+	</script>
 
-		__cmp('getPublisherConsents', null, function (o) {
-			console.log("PUBLISHER CONSENTS");
-			console.dir(o);
+	<script src="<%= htmlWebpackPlugin.files.js %>"></script>
+	<script src='https://www.googletagservices.com/tag/js/gpt.js'></script>
+	<script>
+		var googletag = googletag || {};
+		googletag.cmd = googletag.cmd || [];
+		googletag.cmd.push(function () {
+
+			SMC_SetupDFP();
 		});
-		__cmp('getVendorList', null, function (o) {
-			console.log("TENGO VENDOR LIST");
-		});
-		__cmp('getVendorConsents', [10000], function (o) {
-			console.log("PERMISOS DEL CUSTOM::");
-			console.dir(o);
+
+		googletag.cmd.push(function () {
+			googletag.defineSlot('/5555/smartclip.testjose.es/jose_test_320x250', [[320, 250]], 'div-gpt-ad-1520354760622-0').addService(googletag.pubads());
+			googletag.enableServices();
 		});
 	</script>
 </head>
 <body>
+<div id='div-gpt-ad-1520354760622-0'>
+	<script>
+
+		googletag.cmd.push(function () {
+			googletag.display('div-gpt-ad-1520354760622-0');
+		});
+	</script>
+</div>
+
 </body>
 </html>

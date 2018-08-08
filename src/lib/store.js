@@ -308,7 +308,7 @@ export default class Store {
 				this.vendorConsentData.selectedVendorIds[operation](vendor.id);
 			}
 		});
-		console.dir(this.vendorConsentData);
+
 		this.customVendors.map((item) => this.selectCustomPurpose(item._id, isSelected));
 		this.storeUpdate();
 	};

@@ -3,22 +3,25 @@
 .summary {
 	font-size: .8em;
 	.purposeItems {
-		padding-bottom: 20px;
+
+	}
+	.customPurposes {
+
+	}
+	.customPurposes .purposeTitle {
+		padding: 0px 4px;
 	}
 	.purposeItem {
 		display: flex;
-		border-top: 1px solid @color-border;
-		padding: 8px 0;
+
+		padding: 4px 0;
 		color: @color-textLight;
 
-		&:last-child {
-			border-bottom: 1px solid @color-border;
-		}
 
 		@media @smartphone {
-			padding: 15px 0;
-			display: block;
-			line-height: 16px;
+			padding: 4px 0;
+			display: flex;
+			line-height: 21px;
 		}
 	}
 
@@ -56,5 +59,16 @@
 		font-size: 1em;
 		padding: 5px;
 		height: 35px;
+	}
+	.help {
+		transition: max-height 1s ease-out;
+		max-height: 0;
+		overflow: hidden;
+		color: #999;
+		padding-left: 20px;
+		font-style: italic;
+	}
+	.expandedHelp {
+		max-height: 400px !important;
 	}
 }

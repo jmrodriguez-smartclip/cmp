@@ -2,8 +2,8 @@
   "version": 1,
   "purposes": [
 	{
-	  "id": 1,
-		"name": "0AACustom Purpose 1",
+		"id": 1,
+		"name": " Google",
 		"description": "My description",
 		"type": "vendor",
 		"vendorId": 10000,
@@ -20,15 +20,19 @@
 	},
 	{
 	  "id": 2,
-	  "name": "Custom Purpose 2"
+		"name": "Custom Purpose 2",
+		"description": "Ayuda del custom purpose 2"
 	},
 	{
 	  "id": 3,
-	  "name": "Custom Purpose 3"
+		"name": "Custom Purpose 3",
+		"description": "Ayuda del custom purpose 33"
+
 	},
 	{
 	  "id": 4,
-	  "name": "Custom Purpose 4"
+		"name": "Custom Purpose 4",
+		"description": "Ayuda del custom purpose 444"
 	}
   ]
 }

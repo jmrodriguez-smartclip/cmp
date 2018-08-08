@@ -21,6 +21,16 @@
   background-color: rgba(0, 0, 0, 0.5);
 }
 
+@keyframes showup {
+  from {
+    opacity: 0;
+    top: -30px
+  }
+  to {
+    opacity: 1;
+    top: 0px
+  }
+}
 .content {
   width: 650px;
   //height: 700px;
@@ -33,6 +43,9 @@
     width: 98%;
     height: 98%;
   }
+  border-radius: 10px;
+  animation-name: showup;
+  animation-duration: .5s;
 }
 
 .banner {
@@ -112,7 +125,8 @@ a {
   background-color: @color-primary;
   color: white;
   text-align: center;
-  margin-left: 50%;
+  margin-left: 50%;;
+  border-radius: 5px;
 }
 
 .infoSpan span {

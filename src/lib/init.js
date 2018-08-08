@@ -47,12 +47,12 @@ export function init(configUpdates) {
 				pubVendorsList,
 				allowedVendorIds
 			});
-			if (vendorConsentData == undefined) {
+			if (vendorConsentData === undefined) {
 				top.__cmp('showConsentTool');
 			}
 			else {
 				let pubCookieVersion = readCookie(COOKIE_VERSION_COOKIE_NAME);
-				if (pubCookieVersion == undefined) {
+				if (pubCookieVersion === undefined) {
 					top.__cmp('showConsentTool');
 				}
 				else {
@@ -66,7 +66,6 @@ export function init(configUpdates) {
 			// Replace the __cmp with our implementation
 			const cmp = new Cmp(store);
 
-
 			// Expose `processCommand` as the CMP implementation
 			window[CMP_GLOBAL_NAME] = cmp.processCommand;
 
@@ -76,13 +75,53 @@ export function init(configUpdates) {
 			cmp.notify('isLoaded');
 
 			// Render the UI
-			const App = require('../components/app').default;
-			render(<App store={store} theme={config.theme} notify={cmp.notify} />, document.body);
+			let checkLoad = () => {
+				if (document.body) {
+					render(<App cmp={cmp} store={store} theme={config.theme} notify={cmp.notify}/>, document.body);
+					cmp.commandQueue = commandQueue;
+					cmp.processCommandQueue();
+				}
+				else
+					window.requestAnimationFrame(checkLoad);
+			};
+			checkLoad();
 
+			global.SMC_SetupDFP = function (CONST_DFP_ID) {
+				if (CONST_DFP_ID == undefined)
+					CONST_DFP_ID = 10000;
+				let DFP_CONSENTS_VALUE = null;
+				let googletag = global.googletag;
+				let loadedPromise;
+				let delayedAds = 0;
+				loadedPromise = new Promise((resolve, reject) => {
+					googletag.__display = googletag.display;
+					googletag.display = function (divId) {
+						googletag.__display(divId);
+						let divSlot = null;
+						googletag.pubads().getSlots().map(function (i) {
+							if (i.getSlotElementId() == divId)
+								divSlot = i;
+						});
+						loadedPromise.then(() => {
+							if (divSlot)
+								googletag.pubads().refresh([divSlot]);
+						});
+					};
+					googletag.pubads().disableInitialLoad();
+					window.__cmp('getVendorConsents', [CONST_DFP_ID], function (result) {
+						resolve();
+						console.log("LOS PERMISOS SON : " + result.vendorConsents[CONST_DFP_ID]);
+						DFP_CONSENTS_VALUE = result.vendorConsents[CONST_DFP_ID];
+						googletag.cmd.push(function () {
+							googletag.pubads().setRequestNonPersonalizedAds(DFP_CONSENTS_VALUE ? 0 : 1);
+						});
+
+					});
+				});
+			};
 
 			// Execute any previously queued command
-			cmp.commandQueue = commandQueue;
-			cmp.processCommandQueue();
+
 
 			// Request lists
 			return Promise.all([

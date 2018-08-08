@@ -21,7 +21,7 @@ export default class Popup extends Component {
 			>
 				<div
 					class={style.overlay}
-					style={{background: overlayBackground}}
+					style={{background: overlayBackground, opacity: .5}}
 					onClick={this.handleClose}
 				/>
 				<div class={style.content}>

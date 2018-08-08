@@ -52,6 +52,14 @@ export default class ModalBanner extends Component {
 		const {onSave, controller} = props;
 		const {selectedPanelIndex, isExpanded} = state;
 		const {isBannerShowing, isModalShowing} = controller;
+		const {
+			primaryColor,
+			primaryTextColor,
+			backgroundColor,
+			textColor,
+			textLightColor,
+			textLinkColor,
+		} = props.theme;
 
 		return (
 			<div
@@ -63,12 +71,14 @@ export default class ModalBanner extends Component {
 					class={style.overlay}
 					onClick={this.handleClose}
 				/>
-				<div class={style.content} id="cmp-main-message">
+				<div class={style.content} id="cmp-main-message"
+					 style={{backgroundColor: backgroundColor, color: textLightColor}}
+				>
 					<div
 						class={style.message}
 						ref={el => this.messageRef = el}
 					>
-						<div class={style.title}>
+						<div class={style.title} style={{backgroundColor: backgroundColor, color: textColor}}>
 							<LocalLabel localizeKey='title'>Ads help us run this site</LocalLabel>
 						</div>
 						<LocalLabel localizeKey='description'>

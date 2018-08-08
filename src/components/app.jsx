@@ -4,6 +4,7 @@ import Popup from './popup/popup';
 import Banner from './banner/banner';
 import ModalBanner from './modalBanner/modalBanner';
 import config from '../lib/config';
+import Promise from 'promise-polyfill';
 
 export default class App extends Component {
 	static defaultProps = {
@@ -41,7 +42,6 @@ export default class App extends Component {
 	toggleConsentToolShowing = (isShown) => {
 
 		this.isBannerShowing = typeof isShown === 'boolean' ? isShown : !this.isBannerShowing;
-		console.log("MODAL:" + config.uimode);
 		this.isModalShowing = false;
 		this.isFooterShowing = false;
 		this.state.store.storeUpdate();

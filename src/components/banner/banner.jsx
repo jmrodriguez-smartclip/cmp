@@ -45,8 +45,8 @@ export default class Banner extends Component {
 
 
 	render(props, state) {
-		const { isShowing, onSave, theme } = props;
-		const { selectedPanelIndex, isExpanded } = state;
+		const {controller, isShowing, onSave, theme} = props;
+
 		const {
 			primaryColor,
 			primaryTextColor,
@@ -55,7 +55,6 @@ export default class Banner extends Component {
 			textLightColor,
 			textLinkColor,
 		} = theme;
-		const {controller, onSave} = props;
 		const {selectedPanelIndex, bannerBottom, isExpanded} = state;
 		const {isBannerShowing} = controller;
 

@@ -129,7 +129,8 @@ const commonConfig = {
 			},
 			{
 				test: /\.(xml|html|txt|md)$/,
-				use: 'raw-loader'
+				use: 'raw-loader',
+				exclude: [path.resolve('src/index.html')]
 			},
 			{
 				test: /\.(svg|woff2?|ttf|eot|jpe?g|png|gif)(\?.*)?$/i,
@@ -187,9 +188,11 @@ module.exports = [
 				'Promise': 'promise-polyfill'
 			}),
 			new HtmlWebpackPlugin({
-				filename: 'index.html',
+				//filename: 'index.html',
+				title: "Lalas",
 				template: 'index.html',
-				chunks: ['cmp']
+				chunks: ['cmp'],
+				inject: false
 			}),
 			new CopyWebpackPlugin([
 				{ from: '../serve.json', to: '.' }

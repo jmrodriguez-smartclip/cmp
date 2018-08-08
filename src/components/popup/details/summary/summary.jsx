@@ -1,16 +1,19 @@
-import { h, Component } from 'preact';
+import {h, Component} from 'preact';
 import style from './summary.less';
 import detailsStyle from '../details.less';
 import Label from "../../../label/label";
 import Button from "../../../button/button";
 import Switch from '../../../switch/switch';
+import QuestionIcon from '../../../questionicon/questionicon';
 import config from '../../../../lib/config';
+import {Localize} from '../../../../lib/localize';
 
 class SummaryLabel extends Label {
 	static defaultProps = {
 		prefix: 'summary'
 	};
 }
+
 class PurposesLabel extends Label {
 	static defaultProps = {
 		prefix: 'purposes'
@@ -22,7 +25,8 @@ export default class VendorList extends Component {
 		super(props);
 		this.state = {
 			selectedPurposes: this.props.store.selectedPurposeIds,
-			selectedCustomPurposes: this.props.store.publisherConsentData.selectedCustomPurposeIds
+			selectedCustomPurposes: this.props.store.publisherConsentData.selectedCustomPurposeIds,
+			selectedHelp: 0
 		};
 	}
 
@@ -49,29 +53,61 @@ export default class VendorList extends Component {
 			this.props.store.selectCustomPurpose(customPurpose.id, isSelected);
 		};
 	};
+	handleHelpClick = (purpose) => {
+		return () => {
+			if (this.state.selectedHelp === purpose.helpIndex)
+				this.setState({selectedHelp: 0});
+			else
+				this.setState({selectedHelp: purpose.helpIndex});
+		};
+	};
 
-	renderCustomPurposes(customPurposes) {
+
+	renderCustomPurposes(props, customPurposes) {
 		if (customPurposes.length == 0)
 			return <span/>;
+		const {
+			textColor,
+			dividerColor,
+			textLinkColor
+		} = props.theme;
 		return (
-			<div class={style.purposeItems}>
-				{customPurposes.map((item) => (
-					<div class={style.purposeItem}>
-						<span className={style.purposeTitle}>
-							{item.name}
-						</span>
-						<Switch
-							dataId={item.id}
-							isSelected={this.props.store.publisherConsentData.selectedCustomPurposeIds.has(item.id)}
-							onClick={this.handleCustomPurposeChange(item)}
-						/>
-					</div>
-				))}
+			<div>
+				<div className={detailsStyle.description}>
+					<SummaryLabel localizeKey='customPurposesDescription' style={{color: textColor}}>
+						Our site may also need to use personal information for the following purposes:
+					</SummaryLabel>
+				</div>
+
+				<div className={style.customPurposes}>
+					{customPurposes.map((item) => (
+						<div>
+							<div class={style.purposeItem}>
+								<span className={style.purposeTitle} style={{color: textColor}}>
+									{item.name}
+								</span>
+								<span>
+									<Switch
+										dataId={item.id}
+										isSelected={this.props.store.publisherConsentData.selectedCustomPurposeIds.has(item.id)}
+										onClick={this.handleCustomPurposeChange(item)}
+									/>
+									<a onClick={this.handleHelpClick(item)}><QuestionIcon
+										color={this.state.selectedHelp === item.helpIndex ? textLinkColor : textColor}/></a>
+								</span>
+							</div>
+							<div
+								className={[style.help, this.state.selectedHelp === item.helpIndex ? style.expandedHelp : ''].join(' ')}>
+								{item.help}<br/><br/>
+							</div>
+						</div>
+					))}
+				</div>
 			</div>
 		);
 	}
-	render(props, state)
-	{
+
+	render(props, state) {
 		const {
 			purposes,
 			customPurposes,
@@ -85,6 +121,19 @@ export default class VendorList extends Component {
 			dividerColor,
 			textLinkColor
 		} = theme;
+		const lookup = new Localize();
+		let idx = 0;
+		purposes.map((purposeItem) => {
+			idx++;
+			purposeItem.help = lookup.lookup("purposes.purpose" + (idx) + ".description");
+			purposeItem.helpIndex = idx;
+		});
+		customPurposes.map((purposeItem) => {
+			idx++;
+			purposeItem.help = purposeItem.description;
+			purposeItem.helpIndex = idx;
+		});
+
 
 		return (
 			<div class={style.summary}>
@@ -93,29 +142,40 @@ export default class VendorList extends Component {
 				</div>
 				<div class={detailsStyle.description}>
 					<SummaryLabel localizeKey='description'>
-					We and select companies may access and use your information for the below purposes. You may
-					customize your choices below or continue using our site if you're OK with the purposes.
+						We and select companies may access and use your information for the below purposes. You may
+						customize your choices below or continue using our site if you're OK with the purposes.
 					</SummaryLabel>
 				</div>
-				<div class={style.purposeItems}>
+				<div className={style.purposeItems}>
 					{purposes.map((purposeItem, index) => (
-						<div class={style.purposeItem} style={{borderColor: dividerColor}}>
-							<span class={style.purposeTitle}>
-								<a onClick={this.handlePurposeItemClick(purposeItem)} style={{color: textLinkColor}}>
-									<PurposesLabel
-										localizeKey={`purpose${purposeItem.id}.menu`}>{purposeItem.name}</PurposesLabel>
-								</a>
-							</span>
-							<Switch
-								dataId={purposeItem.id}
+						<div>
+							<div className={style.purposeItem} style={{borderColor: dividerColor}}>
+								<span className={style.purposeTitle}>
+									<a onClick={this.handlePurposeItemClick(purposeItem)}
+									   style={{color: textLinkColor}}>
+										<PurposesLabel
+											localizeKey={`purpose${purposeItem.id}.menu`}>{purposeItem.name}</PurposesLabel>
+									</a>
 
-								isSelected={this.props.store.vendorConsentData.selectedPurposeIds.has(purposeItem.id)}
-								onClick={this.handlePurposeChange(purposeItem)}
-							/>
+
+								</span>
+								<span>
+									<Switch
+										dataId={purposeItem.id}
+										isSelected={this.props.store.vendorConsentData.selectedPurposeIds.has(purposeItem.id)}
+										onClick={this.handlePurposeChange(purposeItem)}/>
+									<a onClick={this.handleHelpClick(purposeItem)}><QuestionIcon
+										color={this.state.selectedHelp === purposeItem.helpIndex ? textLinkColor : textColor}/></a>
+								</span>
+							</div>
+							<div
+								class={[style.help, this.state.selectedHelp === purposeItem.helpIndex ? style.expandedHelp : ''].join(' ')}>
+								{purposeItem.help}<br/><br/>
+							</div>
 						</div>
 					))}
 				</div>
-				{this.renderCustomPurposes(customPurposes)}
+				{this.renderCustomPurposes(props, customPurposes)}
 
 			</div>
 		);
