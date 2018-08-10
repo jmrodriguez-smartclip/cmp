@@ -17,6 +17,52 @@ export function init(configUpdates) {
 	config.update(configUpdates);
 	log.debug('Using configuration:', config);
 	const startTime = Date.now();
+	let cmp = null;
+
+	global.SMC_SetupDFP = function (CONST_DFP_ID) {
+		if (CONST_DFP_ID == undefined)
+			CONST_DFP_ID = 10000;
+		let DFP_CONSENTS_VALUE = null;
+		let googletag = global.googletag;
+		let loadedPromise;
+		let delayedAds = 0;
+		loadedPromise = new Promise((resolve, reject) => {
+			console.log("REPLACING DISPLAY");
+			googletag.__display = googletag.display;
+			googletag.display = function (divId) {
+				console.log("REQUESTED DISPLAY " + divId);
+				googletag.__display(divId);
+				let divSlot = null;
+				googletag.pubads().getSlots().map(function (i) {
+					if (i.getSlotElementId() == divId)
+						divSlot = i;
+				});
+				loadedPromise.then(() => {
+					console.log("REFRESHING " + divSlot);
+					if (divSlot)
+						googletag.pubads().refresh([divSlot]);
+				});
+			};
+			googletag.pubads().disableInitialLoad();
+			let procFunc = () => {
+				cmp.processCommand('getVendorConsents', [CONST_DFP_ID], function (result) {
+					resolve();
+					console.log("LOS PERMISOS SON : " + result.vendorConsents[CONST_DFP_ID]);
+					DFP_CONSENTS_VALUE = result.vendorConsents[CONST_DFP_ID];
+					googletag.cmd.push(function () {
+						console.log("---CONOZCO CONSENTIMIENTOS--");
+						googletag.pubads().setRequestNonPersonalizedAds(DFP_CONSENTS_VALUE ? 0 : 1);
+					});
+
+				});
+			};
+			if (cmp && cmp.cmpReady)
+				procFunc();
+			else
+				cmp.processCommand('addEventListener', 'cmpReady', procFunc);
+		});
+	};
+
 
 	// Fetch the current vendor consent before initializing
 	return Promise.all([
@@ -64,11 +110,11 @@ export function init(configUpdates) {
 			const {commandQueue = []} = window[CMP_GLOBAL_NAME] || {};
 
 			// Replace the __cmp with our implementation
-			const cmp = new Cmp(store);
+			cmp = new Cmp(store);
 
 			// Expose `processCommand` as the CMP implementation
 			window[CMP_GLOBAL_NAME] = cmp.processCommand;
-
+			cmp.commandQueue = commandQueue;
 			// Notify listeners that the CMP is loaded
 			log.debug(`Successfully loaded CMP version: ${pack.version} in ${Date.now() - startTime}ms`);
 			cmp.isLoaded = true;
@@ -78,7 +124,6 @@ export function init(configUpdates) {
 			let checkLoad = () => {
 				if (document.body) {
 					render(<App cmp={cmp} store={store} theme={config.theme} notify={cmp.notify}/>, document.body);
-					cmp.commandQueue = commandQueue;
 					cmp.processCommandQueue();
 				}
 				else
@@ -86,39 +131,6 @@ export function init(configUpdates) {
 			};
 			checkLoad();
 
-			global.SMC_SetupDFP = function (CONST_DFP_ID) {
-				if (CONST_DFP_ID == undefined)
-					CONST_DFP_ID = 10000;
-				let DFP_CONSENTS_VALUE = null;
-				let googletag = global.googletag;
-				let loadedPromise;
-				let delayedAds = 0;
-				loadedPromise = new Promise((resolve, reject) => {
-					googletag.__display = googletag.display;
-					googletag.display = function (divId) {
-						googletag.__display(divId);
-						let divSlot = null;
-						googletag.pubads().getSlots().map(function (i) {
-							if (i.getSlotElementId() == divId)
-								divSlot = i;
-						});
-						loadedPromise.then(() => {
-							if (divSlot)
-								googletag.pubads().refresh([divSlot]);
-						});
-					};
-					googletag.pubads().disableInitialLoad();
-					window.__cmp('getVendorConsents', [CONST_DFP_ID], function (result) {
-						resolve();
-						console.log("LOS PERMISOS SON : " + result.vendorConsents[CONST_DFP_ID]);
-						DFP_CONSENTS_VALUE = result.vendorConsents[CONST_DFP_ID];
-						googletag.cmd.push(function () {
-							googletag.pubads().setRequestNonPersonalizedAds(DFP_CONSENTS_VALUE ? 0 : 1);
-						});
-
-					});
-				});
-			};
 
 			// Execute any previously queued command
 
