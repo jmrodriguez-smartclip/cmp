@@ -9,7 +9,8 @@ import MIN_CUSTOM_VENDOR_ID from "../../../../lib/store";
 
 class VendorsLabel extends Label {
 	static defaultProps = {
-		prefix: 'vendors'
+		prefix: 'vendors',
+		class:style.noWrap
 	};
 }
 class PurposesLabel extends Label {

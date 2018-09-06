@@ -27,10 +27,9 @@ export function init(configUpdates) {
 		let loadedPromise;
 		let delayedAds = 0;
 		loadedPromise = new Promise((resolve, reject) => {
-			console.log("REPLACING DISPLAY");
 			googletag.__display = googletag.display;
 			googletag.display = function (divId) {
-				console.log("REQUESTED DISPLAY " + divId);
+
 				googletag.__display(divId);
 				let divSlot = null;
 				googletag.pubads().getSlots().map(function (i) {
@@ -38,19 +37,16 @@ export function init(configUpdates) {
 						divSlot = i;
 				});
 				loadedPromise.then(() => {
-					console.log("REFRESHING " + divSlot);
 					if (divSlot)
 						googletag.pubads().refresh([divSlot]);
 				});
 			};
 			googletag.pubads().disableInitialLoad();
 			let procFunc = () => {
-				cmp.processCommand('getVendorConsents', [CONST_DFP_ID], function (result) {
+				top.__cmp('getVendorConsents', [CONST_DFP_ID], function (result) {
 					resolve();
-					console.log("LOS PERMISOS SON : " + result.vendorConsents[CONST_DFP_ID]);
 					DFP_CONSENTS_VALUE = result.vendorConsents[CONST_DFP_ID];
 					googletag.cmd.push(function () {
-						console.log("---CONOZCO CONSENTIMIENTOS--");
 						googletag.pubads().setRequestNonPersonalizedAds(DFP_CONSENTS_VALUE ? 0 : 1);
 					});
 
@@ -59,7 +55,7 @@ export function init(configUpdates) {
 			if (cmp && cmp.cmpReady)
 				procFunc();
 			else
-				cmp.processCommand('addEventListener', 'cmpReady', procFunc);
+				top.__cmp('addEventListener', 'cmpReady', procFunc);
 		});
 	};
 
