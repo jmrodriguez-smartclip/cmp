@@ -7,7 +7,7 @@
 		"description": "My description",
 		"type": "vendor",
 		"vendorId": 10000,
-		"policyUrl": "www.adcolony.com/privacy-policy",
+		"policyUrl": "https://policies.google.com/privacy?hl=es",
 		"featureIds": [],
 		"purposeIds": [
 			1,
