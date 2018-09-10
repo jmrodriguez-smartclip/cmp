@@ -204,7 +204,16 @@ function readCookie(name) {
 
 function writeCookie(name, value, maxAgeSeconds, path = '/') {
 	const maxAge = maxAgeSeconds === null ? '' : `;max-age=${maxAgeSeconds}`;
-	document.cookie = `${name}=${value};path=${path}${maxAge}`;
+	let t=[];
+	let d=document.location.host.split(".");
+	let last=d.pop();
+	let domain="";
+	if (!/^-{0,1}\d+$/.test(last)) {
+		t.push(last);
+		t.unshift(d.pop());
+		domain=";domain=."+t.join(".");
+	}
+	document.cookie = `${name}=${value}${domain};path=${path}${maxAge}`;
 }
 
 function readPublisherConsentCookie() {
