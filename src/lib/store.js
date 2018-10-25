@@ -32,7 +32,8 @@ export default class Store {
 		vendorList,
 		customPurposeList,
 		pubVendorsList,
-		allowedVendorIds
+		allowedVendorIds,
+		config
 	} = {}) {
 		// Keep track of data that has already been persisted
 		this.persistedVendorConsentData = copyData(vendorConsentData);
@@ -40,7 +41,7 @@ export default class Store {
 		this.customVendors = [];
 		this.customVendorsEnabled = new Set();
 		this.filteredPublisherPurposes = [];
-
+		this.config=config;
 
 		this.vendorConsentData = Object.assign(
 			{
@@ -385,8 +386,16 @@ export default class Store {
 
 		// If vendor consent data has never been persisted set default selected status
 		if (!created) {
-			this.vendorConsentData.selectedPurposeIds = new Set(purposes.map(p => p.id));
-			this.vendorConsentData.selectedVendorIds = new Set(vendors.map(v => v.id));
+			if (this.config.defaultConsent==="reject")
+			{
+				this.vendorConsentData.selectedPurposeIds=new Set();
+				this.vendorConsentData.selectedVendorIds=new Set();
+			}
+			else {
+				this.vendorConsentData.selectedPurposeIds = new Set(purposes.map(p => p.id));
+				this.vendorConsentData.selectedVendorIds = new Set(vendors.map(v => v.id));
+			}
+
 		}
 
 		const {selectedVendorIds = new Set()} = this.vendorConsentData;
@@ -406,12 +415,20 @@ export default class Store {
 		// If publisher consent has never been persisted set the default selected status
 		if (!created) {
 			const {purposes = [],} = customPurposeList || {};
-			this.publisherConsentData.selectedCustomPurposeIds = new Set(purposes.map(p => p.id));
+			if (this.config.defaultConsent==="reject")
+			{
+				this.publisherConsentData.selectedCustomPurposeIds = new Set();
+			}
+			else {
+				this.publisherConsentData.selectedCustomPurposeIds = new Set(purposes.map(p => p.id));
+			}
+
 		}
 		const consentData = this.publisherConsentData;
 
 		const {version = 1} = customPurposeList || {};
 		this.publisherConsentData.publisherPurposeVersion = version;
+		debugger;
 		this.customPurposeList = customPurposeList;
 		if (customPurposeList) {
 			this.filteredPublisherPurposes = customPurposeList.purposes.filter((item) => {

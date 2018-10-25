@@ -49,7 +49,14 @@ export default class ModalBanner extends Component {
 
 
 	render(props, state) {
-		const {onSave, controller} = props;
+		const {onSave, controller,store} = props;
+
+		let callMe=function(){
+			store.selectAllVendors(true);
+			store.selectAllPurposes(true);
+			store.selectAllCustomPurposes(true);
+			controller.onSave();
+		}
 		const {selectedPanelIndex, isExpanded} = state;
 		const {isBannerShowing, isModalShowing} = controller;
 		const {
@@ -93,7 +100,7 @@ export default class ModalBanner extends Component {
 								</a>
 							</span>
 							<span class={style.accept}>
-								<a onClick={onSave}><LocalLabel localizeKey='links.accept'>Continue to site</LocalLabel></a>
+								<a onClick={callMe}><LocalLabel localizeKey='links.accept'>Continue to site</LocalLabel></a>
 							</span>
 						</div>
 						{/* <div class={style.infoData}>

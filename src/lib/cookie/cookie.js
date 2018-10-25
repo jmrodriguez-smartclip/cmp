@@ -205,7 +205,7 @@ function readCookie(name) {
 function writeCookie(name, value, maxAgeSeconds, path = '/') {
 	const maxAge = maxAgeSeconds === null ? '' : `;max-age=${maxAgeSeconds}`;
 	let t=[];
-	let d=document.location.host.split(".");
+	let d=document.location.hostname.split(".");
 	let last=d.pop();
 	let domain="";
 	if (!/^-{0,1}\d+$/.test(last)) {

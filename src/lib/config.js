@@ -15,7 +15,9 @@ const defaultConfig = {
 	gdprAppliesGlobally: false,
 	allowedVendorIds: null,
 	theme: {},
-	uimode: "modal"
+	uimode: "modal",
+	defaultConsent:"accept",
+	showPublisherConsents:{1:true,2:true,3:true,4:true,5:true}
 };
 
 class Config {

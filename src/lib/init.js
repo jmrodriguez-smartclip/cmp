@@ -67,7 +67,7 @@ export function init(configUpdates) {
 	])
 		.then(([vendorConsentData, pubVendorsList]) => {
 			const {vendors} = pubVendorsList || {};
-
+			debugger;
 			const pubConsentData = readPublisherConsentCookie();
 			// Check config for allowedVendorIds then the pubVendorList
 			const {allowedVendorIds: configVendorIds} = config;
@@ -87,8 +87,10 @@ export function init(configUpdates) {
 				vendorConsentData,
 				publisherConsentData: pubConsentData,
 				pubVendorsList,
-				allowedVendorIds
+				allowedVendorIds,
+				config
 			});
+
 			if (vendorConsentData === undefined) {
 				top.__cmp('showConsentTool');
 			}

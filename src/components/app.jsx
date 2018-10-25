@@ -76,6 +76,7 @@ export default class App extends Component {
 					onSave={this.onSave}
 					controller={this}
 					onShowModal={this.toggleModalShowing}
+					store={this.state.store}
 					theme={theme}
 				/> : <Banner
 					onSave={this.onSave}

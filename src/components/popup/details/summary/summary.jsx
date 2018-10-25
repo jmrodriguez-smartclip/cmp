@@ -116,6 +116,7 @@ export default class VendorList extends Component {
 			theme
 		} = props;
 
+
 		const {
 			textColor,
 			dividerColor,
@@ -133,6 +134,7 @@ export default class VendorList extends Component {
 			purposeItem.help = purposeItem.description;
 			purposeItem.helpIndex = idx;
 		});
+
 
 
 		return (
