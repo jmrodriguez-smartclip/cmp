@@ -16,7 +16,7 @@ const defaultConfig = {
 	allowedVendorIds: null,
 	theme: {},
 	uimode: "modal", // modal, non-modal
-	defaultConsent:"accept",
+	defaultConsent:"reject",
 	showPublisherConsents:{1:true,2:true,3:true,4:true,5:true},
 	position: "centered" // top, bottom, centered
 };
