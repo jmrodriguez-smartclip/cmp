@@ -3,6 +3,7 @@ import style from './modalBanner.less';
 import Label from '../label/label';
 import Panel from '../panel/panel';
 import ChevronIcon from '../chevronicon/chevronicon';
+import config from '../../lib/config';
 
 class LocalLabel extends Label {
 	static defaultProps = {
@@ -49,14 +50,14 @@ export default class ModalBanner extends Component {
 
 
 	render(props, state) {
-		const {onSave, controller,store} = props;
+		const {onSave, controller, store} = props;
 
-		let callMe=function(){
+		let callMe = function () {
 			store.selectAllVendors(true);
 			store.selectAllPurposes(true);
 			store.selectAllCustomPurposes(true);
 			controller.onSave();
-		}
+		};
 		const {selectedPanelIndex, isExpanded} = state;
 		const {isBannerShowing, isModalShowing} = controller;
 		const {
@@ -68,6 +69,7 @@ export default class ModalBanner extends Component {
 			textLinkColor,
 		} = props.theme;
 
+		let dispositionStyle = style.content + " " + style["content-" + config.position];
 		return (
 			<div
 				class={style.popup}
@@ -78,7 +80,7 @@ export default class ModalBanner extends Component {
 					class={style.overlay}
 					onClick={this.handleClose}
 				/>
-				<div class={style.content} id="cmp-main-message"
+				<div class={dispositionStyle} id="cmp-main-message"
 					 style={{backgroundColor: backgroundColor, color: textLightColor}}
 				>
 					<div
@@ -88,11 +90,13 @@ export default class ModalBanner extends Component {
 						<div class={style.title} style={{backgroundColor: backgroundColor, color: textColor}}>
 							<LocalLabel localizeKey='title'>Ads help us run this site</LocalLabel>
 						</div>
-						<LocalLabel localizeKey='description'>
-							When you visit our site, pre-selected companies may access and use certain information on
-							your device to serve relevant ads or personalized content.
-						</LocalLabel>
-
+						<div class={style.messageContents}>
+							<LocalLabel localizeKey='description'>
+								When you visit our site, pre-selected companies may access and use certain information
+								on
+								your device to serve relevant ads or personalized content.
+							</LocalLabel>
+						</div>
 						<div className={style.info}>
 							<span class={style.learnMore}>
 								<a onClick={this.handleLearnMore}><LocalLabel localizeKey='links.manage'>Learn

@@ -72,7 +72,7 @@ export default class App extends Component {
 
 		return (
 			<div class={style.gdpr}>
-				{config.uimode ? <ModalBanner
+				{config.uimode=="modal" ? <ModalBanner
 					onSave={this.onSave}
 					controller={this}
 					onShowModal={this.toggleModalShowing}
@@ -81,6 +81,8 @@ export default class App extends Component {
 				/> : <Banner
 					onSave={this.onSave}
 					controller={this}
+					store={this.state.store}
+					theme={theme}
 					onShowModal={this.toggleModalShowing}/>
 				}
 				<Popup store={store} controller={this}

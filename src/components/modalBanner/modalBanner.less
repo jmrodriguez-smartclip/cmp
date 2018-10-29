@@ -41,12 +41,42 @@
 
   @media @smartphone {
     width: 98%;
-    height: 98%;
   }
-  border-radius: 10px;
-  animation-name: showup;
-  animation-duration: .5s;
+
+  //animation-name: showup;
+  //animation-duration: .5s;
 }
+
+
+.content-centered {
+
+  position: relative;
+  @media @smartphone {
+    height:auto
+  }
+}
+.content-top {
+  position:fixed;
+  width:100%;
+  max-height:550px;
+  top:0;
+}
+.content-bottom {
+  position:fixed;
+  width:100%;
+  bottom:0;
+}
+.messageContents {
+  overflow-y:auto;
+}
+.content-centered .messageContents {
+  max-height:500px;
+}
+.content-top .messageContents, .content-bottom .messageContents {
+  max-height:200px;
+
+}
+
 
 .banner {
   position: fixed;
@@ -83,6 +113,9 @@ a {
 
 .message {
   padding: 30px;
+  @media @smartphone {
+    padding: 15px;
+  }
 }
 
 .expand {

@@ -4,6 +4,12 @@
 div.vendors {
 	display: flex;
 	flex-direction: column;
+	max-height:500px;
+	@media @smartphone
+	{
+		max-height:400px;
+	}
+	overflow-y:auto;
 
 	.header {
 		display: flex;

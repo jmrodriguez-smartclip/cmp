@@ -4,8 +4,8 @@
 	position: fixed;
 	right: 0;
 	left: 0;
-	bottom: 0;
-	z-index: 99999;
+
+	z-index: 9999999;
 
 	color: @color-textLight;
 	background: white;
@@ -30,15 +30,21 @@
 
 	.content {
 		.message {
-			display: flex;
+			//display: flex;
 
 			@media @smartphone {
 				display: block;
 			}
+			.messageContent
+			{
 
+				overflow-y: auto;
+			}
 			.info {
 				flex: 1;
 				line-height: 16px;
+				margin-bottom: 15px;
+
 
 				@media @smartphone {
 					font-size: 12px;
@@ -166,4 +172,76 @@
 			list-style-type: square;
 		}
 	}
+}
+
+a {
+	text-decoration: underline;
+	padding: 0 4px;
+
+}
+
+.links {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.links, .infoData {
+	display: flex;
+}
+
+.learnMore, .accept {
+	display: block;
+	width: 50%;
+}
+
+.learnMore {
+	max-width:50%
+}
+
+.accept {
+	text-align: right
+}
+
+.accept a {
+	display: block;
+	padding: 3px;
+	background-color: @color-primary;
+	color: white;
+	text-align: center;
+	margin-left: 50%;;
+	border-radius: 5px;
+	max-width: 50%;
+	min-width:150px;
+	float:right;
+}
+
+.infoSpan span {
+	font-size: 12px;
+	position: relative;
+	top: -6px;
+}
+
+.infoExpanded {
+	padding: 0 20px 20px 30px;
+	min-height: 210px;
+	ul {
+		margin: 0;
+	}
+}
+
+.messageContent
+{
+	max-height: 200px;
+	overflow-y:auto;
+}
+
+
+.banner-top,
+.banner-centered {
+	width:100%;
+	top:0;
+}
+.banner-bottom {
+	width:100%;
+	bottom:0;
 }

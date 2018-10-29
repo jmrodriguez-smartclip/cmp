@@ -428,7 +428,7 @@ export default class Store {
 
 		const {version = 1} = customPurposeList || {};
 		this.publisherConsentData.publisherPurposeVersion = version;
-		debugger;
+
 		this.customPurposeList = customPurposeList;
 		if (customPurposeList) {
 			this.filteredPublisherPurposes = customPurposeList.purposes.filter((item) => {

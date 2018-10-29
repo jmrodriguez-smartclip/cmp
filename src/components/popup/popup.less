@@ -10,8 +10,8 @@
 	z-index: 99999;
 	justify-content: center;
 	align-items: center;
-
 }
+
 .overlay {
 	position: fixed;
 	top: 0;
@@ -23,15 +23,24 @@
 
 .content {
 	width: 650px;
-	height: 700px;
+	z-index:99999999999;
 	background: white;
 	display: flex;
 	align-items: center;
-	position: relative;
+
 	border-radius: 10px;
 
 	@media @smartphone {
 		width: 98%;
-		height: 98%;
+		max-height:98%;
+		overflow-y:scroll
 	}
+}
+.content-centered {
+	height: 700px;
+	position: relative;
+}
+.content-top {
+	position:fixed;
+	top:0px;
 }
