@@ -73,7 +73,8 @@ export default class Banner extends Component {
 				style={{
 					boxShadow: `0px 0px 5px ${primaryColor}`,
 					backgroundColor: backgroundColor,
-					color: textLightColor
+					color: textLightColor,
+					display: isBannerShowing ? 'flex' : 'none'
 				}}
 			>
 				<div class={style.content}>
