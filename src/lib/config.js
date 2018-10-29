@@ -15,10 +15,10 @@ const defaultConfig = {
 	gdprAppliesGlobally: false,
 	allowedVendorIds: null,
 	theme: {},
-	uimode: "non-modal", // modal, non-modal
+	uimode: "modal", // modal, non-modal
 	defaultConsent:"accept",
 	showPublisherConsents:{1:true,2:true,3:true,4:true,5:true},
-	position: "bottom" // top, bottom, centered
+	position: "centered" // top, bottom, centered
 };
 
 class Config {
