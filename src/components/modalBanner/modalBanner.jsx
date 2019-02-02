@@ -99,12 +99,12 @@ export default class ModalBanner extends Component {
 						</div>
 						<div className={style.info}>
 							<span class={style.learnMore}>
-								<a onClick={this.handleLearnMore}><LocalLabel localizeKey='links.manage'>Learn
+								<a className={style.popuplink} onClick={this.handleLearnMore}><LocalLabel localizeKey='links.manage'>Learn
 									More</LocalLabel>
 								</a>
 							</span>
 							<span class={style.accept}>
-								<a onClick={callMe}><LocalLabel localizeKey='links.accept'>Continue to site</LocalLabel></a>
+								<a className={style.popuplink} onClick={callMe}><LocalLabel localizeKey='links.accept'>Continue to site</LocalLabel></a>
 							</span>
 						</div>
 						{/* <div class={style.infoData}>

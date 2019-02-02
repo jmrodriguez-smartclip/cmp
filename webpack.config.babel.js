@@ -154,7 +154,7 @@ const commonConfig = {
 
 	devServer: {
 		port: process.env.PORT || 8080,
-		host: 'localhost',
+		host: 'localtests.com',
 		publicPath: '/',
 		contentBase: './src',
 		historyApiFallback: true,

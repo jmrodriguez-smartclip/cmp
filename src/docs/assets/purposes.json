@@ -1,38 +1,33 @@
 {
-  "version": 1,
-  "purposes": [
-	{
-		"id": 1,
-		"name": " Google",
-		"description": "My description",
-		"type": "vendor",
-		"vendorId": 10000,
-		"policyUrl": "https://policies.google.com/privacy?hl=es",
-		"featureIds": [],
-		"purposeIds": [
-			1,
-			2,
-			3,
-			4,
-			5
-		],
-		"legIntPurposeIds": []
-	},
-	{
-	  "id": 2,
-		"name": "Custom Purpose 2",
-		"description": "Ayuda del custom purpose 2"
-	},
-	{
-	  "id": 3,
-		"name": "Custom Purpose 3",
-		"description": "Ayuda del custom purpose 33"
+	"version": 1,
+	"purposes": [
+		{
+			"id": 1,
+			"name": " Google",
+			"description": "My description",
+			"type": "vendor",
+			"vendorId": 10000,
+			"policyUrl": "https://policies.google.com/privacy?hl=es",
+			"featureIds": [],
+			"purposeIds": [
+				1,
+				2,
+				3,
+				4,
+				5
+			],
+			"legIntPurposeIds": []
+		},
+		{
+			"id": 2,
+			"name": "Compartir tus análisis de navegación y grupos de interés con terceros para personalización de publicidad.",
+			"description":"Nos permite compartir con empresas pertenecientes al Grupo Atresmedia los perfiles o grupos de interés generados a partir de tus hábitos de navegación para personalizar campañas publicitarias comercializadas en webs de Smartclip o propias del Grupo Atresmedia."
+		},
+		{
+			"id": 3,
+			"name": "Utilizar fuentes de datos externas para la elaboración de perfiles y grupos de interés para personalización de publicidad y contenidos.",
+			"description": "Nos permite utilizar fuentes de datos externas, en concreto, los datos de navegación obtenidos por Smartclip en sitios webs del Grupo Atresmedia, para perfilar tus hábitos de navegación e inferir grupos de interés con el objetivo de personalizar contenidos y campañas publicitarias."
 
-	},
-	{
-	  "id": 4,
-		"name": "Custom Purpose 4",
-		"description": "Ayuda del custom purpose 444"
-	}
-  ]
+		}
+	]
 }

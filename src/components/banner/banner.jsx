@@ -96,12 +96,12 @@ export default class Banner extends Component {
 						</div>
 						<div className={style.links}>
 							<span className={style.learnMore}>
-								<a onClick={this.handleLearnMore}><LocalLabel localizeKey='links.manage'>Learn
+								<a className={style.bannerLink} onClick={this.handleLearnMore}><LocalLabel localizeKey='links.manage'>Learn
 									More</LocalLabel>
 								</a>
 							</span>
 							<span className={style.accept}>
-								<a onClick={callMe}><LocalLabel localizeKey='links.accept'>Continue to site</LocalLabel></a>
+								<a className={style.bannerLink} onClick={callMe}><LocalLabel localizeKey='links.accept'>Continue to site</LocalLabel></a>
 							</span>
 						</div>
 					</div>
