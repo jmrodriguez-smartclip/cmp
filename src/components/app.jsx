@@ -1,10 +1,10 @@
 import { h, Component } from 'preact';
 import style from './app.less';
+import { SECTION_PURPOSES, SECTION_VENDORS } from './popup/details/details';
 import Popup from './popup/popup';
 import Banner from './banner/banner';
 import ModalBanner from './modalBanner/modalBanner';
 import config from '../lib/config';
-import Promise from 'promise-polyfill';
 
 export default class App extends Component {
 	static defaultProps = {
@@ -17,7 +17,9 @@ export default class App extends Component {
 		props.cmp.setApp(this);
 	}
 	state = {
-		store: this.props.store
+		store: this.props.store,
+		selectedDetailsPanelIndex: SECTION_PURPOSES,
+		visitedPurposes: {},
 	};
 	isConsentToolShowing = false;
 	isBannerShowing = false;
@@ -29,6 +31,42 @@ export default class App extends Component {
 		this.toggleConsentToolShowing(false);
 	};
 
+
+	onChangeDetailsPanel = panelIndex => {
+		this.props.store.toggleModalShowing(true);
+		this.setState({
+			selectedDetailsPanelIndex: Math.max(0, panelIndex)
+		});
+	};
+
+	onSelectPurpose = purposeItem => {
+		const { visitedPurposes } = this.state;
+		const { store } = this.props;
+		const {
+			selectAllVendors,
+			vendorConsentData: { created }
+		} = store;
+
+		// If this is the user's first visit according to their cookie data
+		// our workflow is to default all vendor consents to disallow for
+		// each purpose they inspect.
+		if (!created &&
+			!visitedPurposes[purposeItem.id]) {
+			selectAllVendors(false, purposeItem.id);
+		}
+		this.setState({
+			visitedPurposes: {
+				...visitedPurposes,
+				[purposeItem.id]: true
+			}
+		});
+
+		store.toggleModalShowing(true);
+		this.setState({
+			selectedPurposeDetails: purposeItem,
+			selectedDetailsPanelIndex: SECTION_VENDORS
+		});
+	};
 
 	updateState = (store) => {
 		this.setState({ store });
@@ -64,30 +102,54 @@ export default class App extends Component {
 
 		const {
 			store,
+			selectedDetailsPanelIndex,
+			selectedPurposeDetails,
 		} = state;
 		const {
 			theme,
 		} = props;
 
+		const {
+			isModalShowing,
+			isBannerShowing,
+			toggleModalShowing,
+			vendorList = {},
+		} = store;
+
+		const { purposes = [] } = vendorList;
 
 		return (
 			<div class={style.gdpr}>
-				{config.uimode=="modal" ? <ModalBanner
-					onSave={this.onSave}
-					controller={this}
-					onShowModal={this.toggleModalShowing}
-					store={this.state.store}
-					theme={theme}
-				/> : <Banner
-					onSave={this.onSave}
-					controller={this}
-					store={this.state.store}
-					theme={theme}
-					onShowModal={this.toggleModalShowing}/>
-				}
-				<Popup store={store} controller={this}
+				{config.uimode=="modal" ? <ModalBanner isShowing={isBannerShowing}
+													   controller={this}
+													   store={store}
+						isModalShowing={isModalShowing}
+						onSave={this.onSave}
+						onShowModal={toggleModalShowing}
+						onSelectPurpose={this.onSelectPurpose}
+						onChangeDetailsPanel={this.onChangeDetailsPanel}
+						theme={theme}
+						purposes={purposes}
+						selectedPurposeDetails={selectedPurposeDetails}/>
+					:
+					<Banner isShowing={isBannerShowing}
+								 isModalShowing={isModalShowing}
+								 onSave={this.onSave}
+								 onShowModal={toggleModalShowing}
+								 onSelectPurpose={this.onSelectPurpose}
+								 onChangeDetailsPanel={this.onChangeDetailsPanel}
+								 theme={theme}
+								 purposes={purposes}
+								 selectedPurposeDetails={selectedPurposeDetails}
+					/>}
+				<Popup store={store}
 					   onSave={this.onSave}
+					   onChangeDetailsPanel={this.onChangeDetailsPanel}
+					   onSelectPurpose={this.onSelectPurpose}
+					   selectedDetailsPanelIndex={selectedDetailsPanelIndex}
 					   theme={theme}
+					   selectedPurposeDetails={selectedPurposeDetails}
+					   controller={this}
 				/>
 			</div>
 		);

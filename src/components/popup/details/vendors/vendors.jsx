@@ -34,7 +34,7 @@ export default class Vendors extends Component {
 		selectedVendorIds: new Set(),
 		selectVendor: () => {},
 		selectAllVendors: () => {},
-		selectedPurpose: {}
+		selectedPurposeDetails: {}
 	};
 
 	handleAcceptAll = () => {
@@ -47,8 +47,9 @@ export default class Vendors extends Component {
 	};
 
 	handleToggleAll = () => {
+		const { id: selectedPurposeId } = this.props.selectedPurposeDetails;
 		const {isSelectAll} = this.state;
-		this[isSelectAll ? 'handleAcceptAll' : 'handleRejectAll']();
+		this.props.selectAllVendors(isSelectAll, selectedPurposeId);
 		this.setState({isSelectAll: !isSelectAll});
 	};
 
@@ -58,11 +59,12 @@ export default class Vendors extends Component {
 
 	render(props, state) {
 
+		const { isSelectAll } = state;
 		const {
 			vendors,
 			purposes,
 			selectedVendorIds,
-			selectedPurpose,
+			selectedPurposeDetails,
 			theme,
 		} = props;
 
@@ -77,7 +79,7 @@ export default class Vendors extends Component {
 			id: selectedPurposeId,
 			name,
 			description
-		} = selectedPurpose;
+		} = selectedPurposeDetails;
 
 
 		const validVendors = vendors
@@ -95,7 +97,7 @@ export default class Vendors extends Component {
 					</div>
 				</div>
 				<div class={detailsStyle.description} style={{color: textLightColor}}>
-					<p><PurposesLabel localizeKey={`purpose${selectedPurposeId}.description`}>What this means: {description}</PurposesLabel></p>
+					<p><PurposesLabel localizeKey={`purpose${selectedPurposeId}.description`}>{description}</PurposesLabel></p>
 					<p><PurposesLabel localizeKey='optoutdDescription'>
 						Depending on the type of data they collect, use,
 						and process and other factors including privacy by design, certain partners rely on your consent while others require you to opt-out.
@@ -105,23 +107,34 @@ export default class Vendors extends Component {
 						, or <a href='http://youronlinechoices.eu/' target='_blank' style={{color: textLinkColor}}>EDAA</a> sites.
 					</PurposesLabel></p>
 				</div>
-				<a class={style.toggleAll} onClick={this.handleToggleAll} style={{color: primaryColor}}><VendorsLabel localizeKey='acceptAll'>Allow All</VendorsLabel></a>
+				<a class={style.toggleAll} onClick={this.handleToggleAll} style={{color: primaryColor}}>
+					{isSelectAll ?
+						<VendorsLabel localizeKey='acceptAll'>Allow All</VendorsLabel> :
+						<VendorsLabel localizeKey='acceptNone'>Disallow All</VendorsLabel>
+					}
+				</a>
 				<div class={style.vendorContent}>
 					<table class={style.vendorList}>
 						<tbody>
 							{validVendors.map(({id, name, purposeIds, policyUrl, policyUrlDisplay}, index) => (
 								<tr key={id} class={index % 2 === 0 ? style.even : ''}>
+									<td>
+										<div class={style.vendorName}>
+											{name}
+											<a href={policyUrl} class={style.policy} style={{ color: textLinkColor}} target='_blank'><ExternalLinkIcon color={textLinkColor} /></a>
+										</div>
+									</td>
 									<td class={style.allowColumn}>
-										{purposeIds.indexOf(selectedPurpose.id) > -1 ?
+										{purposeIds.indexOf(selectedPurposeDetails.id) > -1 ?
 											<span class={style.allowSwitch}>
-												<Switch
+												<VendorsLabel localizeKey='accept'>Allow</VendorsLabel> <Switch
+													color={primaryColor}
 													dataId={id}
 													isSelected={selectedVendorIds.has(id)}
 													onClick={this.handleSelectVendor}
 												/>
 											</span> :
-											<a href={policyUrl} class={style.policy} style={{ color: textLinkColor}}  target='_blank'><VendorsLabel
-												localizeKey='optOut'>requires opt-out</VendorsLabel></a>
+											<VendorsLabel localizeKey='optOut'>requires opt-out</VendorsLabel>
 										}
 									</td>
 

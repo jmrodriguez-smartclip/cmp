@@ -4,10 +4,17 @@ import Label from '../label/label';
 import Panel from '../panel/panel';
 import ChevronIcon from '../chevronicon/chevronicon';
 import config from "../../lib/config";
+import { SECTION_VENDOR_LIST } from '../popup/details/details';
 
 class LocalLabel extends Label {
 	static defaultProps = {
 		prefix: 'banner'
+	};
+}
+
+class PurposesLabel extends Label {
+	static defaultProps = {
+		prefix: 'purposes'
 	};
 }
 
@@ -44,10 +51,19 @@ export default class Banner extends Component {
 		this.props.onShowModal(true);
 	};
 
+	handlePurposeItemClick = purposeItem => {
+		return () => {
+			this.props.onSelectPurpose(purposeItem);
+		};
+	};
+
+	handleVendorListClick = () => {
+		this.props.onChangeDetailsPanel(SECTION_VENDOR_LIST);
+	};
 
 	render(props, state) {
-		const {controller, isShowing, onSave, theme} = props;
-
+		const {controller, isShowing, onSave, theme,purposes} = props;
+		const { selectedPanelIndex, isExpanded } = state;
 		const {
 			primaryColor,
 			primaryTextColor,
@@ -56,7 +72,6 @@ export default class Banner extends Component {
 			textLightColor,
 			textLinkColor,
 		} = theme;
-		const {selectedPanelIndex, bannerBottom, isExpanded} = state;
 		const {isBannerShowing} = controller;
 		let callMe=function(){
 			store.selectAllVendors(true);
@@ -86,23 +101,90 @@ export default class Banner extends Component {
 							<div class={style.title} style={{ color: textColor }}>
 								<LocalLabel localizeKey='title'>Ads help us run this site</LocalLabel>
 							</div>
-							<div class="{style.messageContent}">
 							<LocalLabel localizeKey='description'>
 								When you visit our site, pre-selected companies may access and use certain information
 								on your device to serve relevant ads or personalized content.
 							</LocalLabel>
-							</div>
+							<div class={style.options}>
+								<div
+									class={[style.option, selectedPanelIndex === PANEL_COLLECTED && isExpanded ? style.expanded : ''].join(' ')}>
+									<a
+										onClick={this.handleInfo(PANEL_COLLECTED)}
+										class={style.detailExpand}
+									>
+										<ChevronIcon color={textLinkColor}/>
+										<LocalLabel localizeKey='links.data.title'>Information that may be
+											used
+										</LocalLabel>
+									</a>
+									<div
+										className={style.optionDetails}
+										style={{ color: textLightColor }}
+									>
+										<LocalLabel localizeKey='links.data.description'>
+											<ul>
+												<li>Type of browser and its settings</li>
+												<li>Information about the device's operating system</li>
+												<li>Cookie information</li>
+												<li>Information about other identifiers assigned to the device</li>
+												<li>The IP address from which the device accesses a client's website or
+													mobile application
+												</li>
+												<li>Information about the user's activity on that device, including web
+													pages and mobile apps visited or used
+												</li>
+												<li>Information about the geographic location of the device when it
+													accesses
+													a website or mobile application
+												</li>
+											</ul>
+										</LocalLabel>
+									</div>
+								</div>
+								<div
+									class={[style.option, selectedPanelIndex === PANEL_PURPOSE && isExpanded ? style.expanded : ''].join(' ')}>
+									<a
+										onClick={this.handleInfo(PANEL_PURPOSE)}
+										class={style.detailExpand}
+									>
+										<ChevronIcon color={textLinkColor} />
+										<LocalLabel localizeKey='links.purposes.title'>Purposes for storing
+											information</LocalLabel>
+									</a>
 
+									<div
+										class={style.optionDetails}
+										style={{ color: textLightColor }}
+									>
+										<ul>
+											{purposes.map((purposeItem, index) => (
+												<li class={style.purposeItem}>
+													<a class={style.learnMore} onClick={this.handlePurposeItemClick(purposeItem)} style={{color: textLinkColor}}>
+														<PurposesLabel localizeKey={`purpose${purposeItem.id}.menu`}>{purposeItem.name}</PurposesLabel>
+													</a>
+												</li>
+											))}
+										</ul>
+									</div>
+								</div>
+							</div>
 						</div>
-						<div className={style.links}>
-							<span className={style.learnMore}>
-								<a className={style.bannerLink} onClick={this.handleLearnMore}><LocalLabel localizeKey='links.manage'>Learn
-									More</LocalLabel>
-								</a>
-							</span>
-							<span className={style.accept}>
-								<a className={style.bannerLink} onClick={callMe}><LocalLabel localizeKey='links.accept'>Continue to site</LocalLabel></a>
-							</span>
+						<div class={style.consent}>
+							<a class={style.learnMore} onClick={this.handleLearnMore}
+							   style={{ color: primaryColor, borderColor: primaryColor }}>
+								<LocalLabel localizeKey='links.manage'>Manage Your Choices</LocalLabel>
+							</a>
+							<a
+								class={style.continue}
+								onClick={callMe}
+								style={{
+									backgroundColor: primaryColor,
+									borderColor: primaryColor,
+									color: primaryTextColor
+								}}
+							>
+								<LocalLabel localizeKey='links.accept'>Continue to site</LocalLabel>
+							</a>
 						</div>
 					</div>
 				</div>

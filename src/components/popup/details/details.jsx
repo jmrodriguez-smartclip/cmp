@@ -14,10 +14,10 @@ class LocalLabel extends Label {
 	};
 }
 
-const SECTION_PURPOSES = 0;
-const SECTION_VENDOR_LIST = 1;
-const SECTION_PURPOSE_LIST = 2;
-const SECTION_VENDORS = 3;
+export const SECTION_PURPOSES = 0;
+export const SECTION_VENDOR_LIST = 1;
+export const SECTION_PURPOSE_LIST = 2;
+export const SECTION_VENDORS = 3;
 
 export default class Details extends Component {
 	state = {
@@ -26,24 +26,22 @@ export default class Details extends Component {
 
 	handlePanelClick = panelIndex => {
 		return () => {
-			this.setState({
-				selectedPanelIndex: Math.max(0, panelIndex)
-			});
+			this.props.onChangeDetailsPanel(Math.max(0, panelIndex));
 		};
 	};
 
 	handleBack = () => {
-		this.setState({
-			selectedPanelIndex: SECTION_PURPOSES
-		});
+		this.props.onChangeDetailsPanel(SECTION_PURPOSES);
 	};
 
 	handlePurposeClick = purposeItem => {
+		const {
+			onChangeDetailsPanel,
+			onSelectPurpose,
+		} = this.props;
 
-		this.setState({
-			selectedPurpose: purposeItem,
-			selectedPanelIndex: SECTION_VENDORS
-		});
+		onChangeDetailsPanel(SECTION_VENDORS);
+		onSelectPurpose(purposeItem);
 	};
 
 
@@ -53,11 +51,9 @@ export default class Details extends Component {
 			onClose,
 			store,
 			theme,
-		} = props;
-		const {
 			selectedPanelIndex,
-			selectedPurpose
-		} = state;
+			selectedPurposeDetails
+		} = props;
 
 		const {
 			backgroundColor,
@@ -78,10 +74,10 @@ export default class Details extends Component {
 			selectAllVendors,
 			selectVendor
 		} = store;
-		const {selectedPurposeIds, selectedVendorIds} = vendorConsentData;
-		const {selectedCustomPurposeIds} = publisherConsentData;
-		const {purposes = [], vendors = []} = vendorList;
-		const {purposes: customPurposes = []} = customPurposeList;
+		const { selectedPurposeIds, selectedVendorIds } = vendorConsentData;
+		const { selectedCustomPurposeIds } = publisherConsentData;
+		const { purposes = [], vendors = [] } = vendorList;
+		const { purposes: customPurposes = [] } = customPurposeList;
 
 		const formattedVendors = vendors
 			.map(vendor => ({
@@ -104,7 +100,10 @@ export default class Details extends Component {
 
 
 		return (
-			<div class={style.details} style={{backgroundColor: backgroundColor, color: textLightColor}}>
+			<div class={style.details} style={{
+				backgroundColor: backgroundColor,
+				color: textLightColor
+			}}>
 				<div class={style.body}>
 					<Panel selectedIndex={selectedPanelIndex}>
 						<Summary
@@ -130,15 +129,15 @@ export default class Details extends Component {
 							purposes={purposes}
 							selectVendor={selectVendor}
 							selectAllVendors={selectAllVendors}
+							selectedPurposeDetails={selectedPurposeDetails}
 							selectedVendorIds={mergedSelection}
-							selectedPurpose={selectedPurpose}
 							store={store}
 
 							theme={theme}
 						/>
 					</Panel>
 				</div>
-				<div class={style.footer} style={{borderColor: dividerColor}}>
+				<div class={style.footer} style={{ borderColor: dividerColor }}>
 					{selectedPanelIndex > 0 &&
 					<Button
 						class={style.back}
@@ -147,9 +146,12 @@ export default class Details extends Component {
 						textColor={secondaryTextColor}
 					>&lt; <LocalLabel localizeKey='back'>Back</LocalLabel></Button>
 					}
-					<Button class={(selectedPanelIndex == 0 && style.save_full) || style.save}
-							backgroundColor={primaryColor}
-							textColor={primaryTextColor} onClick={onSave}><LocalLabel localizeKey='save'>Continue Using Site</LocalLabel></Button>
+					<Button
+						class={style.save}
+						onClick={onSave}
+						backgroundColor={primaryColor}
+						textColor={primaryTextColor}
+					><LocalLabel localizeKey='save'>Continue Using Site</LocalLabel></Button>
 				</div>
 			</div>
 		);

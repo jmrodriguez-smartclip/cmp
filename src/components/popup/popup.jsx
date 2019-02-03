@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import style from './popup.less';
 import Details from './details/details';
-
+import CloseButton from '../closebutton/closebutton';
 
 export default class Popup extends Component {
 
@@ -11,9 +11,20 @@ export default class Popup extends Component {
 	};
 
 	render(props, state) {
-		const {store, onSave, controller,theme} = props;
+		const {
+			store,
+			onSave,
+			theme,
+			onChangeDetailsPanel,
+			onSelectPurpose,
+			selectedDetailsPanelIndex,
+			selectedPurposeDetails,
+			controller
+		} = props;
 		const {overlayBackground, secondaryColor, backgroundColor} = theme;
 		const {isModalShowing} = controller;
+
+
 		return (
 			<div
 				class={style.popup}
@@ -21,17 +32,24 @@ export default class Popup extends Component {
 			>
 				<div
 					class={style.overlay}
-					style={{background: overlayBackground, opacity: .5}}
+					style={{background: overlayBackground}}
 					onClick={this.handleClose}
 				/>
-				<div class={style.content}>
-					<Details
-						onSave={onSave}
-						store={store}
-						onClose={this.handleClose}
-						theme={theme}
-					/>
-				</div>
+				{isModalShowing ?
+					<div class={style.content}>
+						<CloseButton onClick={this.handleClose} stroke={secondaryColor} fill={backgroundColor} />
+						<Details
+							onSave={onSave}
+							store={store}
+							onClose={this.handleClose}
+							onChangeDetailsPanel={onChangeDetailsPanel}
+							onSelectPurpose={onSelectPurpose}
+							selectedPanelIndex={selectedDetailsPanelIndex}
+							selectedPurposeDetails={selectedPurposeDetails}
+							theme={theme}
+						/>
+					</div> : null
+				}
 			</div>
 		);
 	}

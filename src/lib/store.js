@@ -1,7 +1,7 @@
 import {writePublisherConsentCookie, writeVendorConsentCookie, writeCookie} from "./cookie/cookie";
 import config from './config';
 import { findLocale } from './localize';
-import {fetchPubVendorList} from "./vendor";
+
 import {COOKIE_VERSION_COOKIE_NAME} from "init";
 /**
  * Copy a data object and make sure to replace references
@@ -209,7 +209,6 @@ export default class Store {
 		};
 	};
 
-
 	/**
 	 * Persist all consent data to the cookie.  This data will NOT be filtered
 	 * by the vendorList and will include global consents set no matter what
@@ -363,6 +362,7 @@ export default class Store {
 	};
 
 
+
 	updateVendorList = vendorList => {
 
 		const {
@@ -432,14 +432,14 @@ export default class Store {
 		this.customPurposeList = customPurposeList;
 		if (customPurposeList) {
 			this.filteredPublisherPurposes = customPurposeList.purposes.filter((item) => {
-				if (item.type == "vendor" && parseInt(item.vendorId) >= MIN_CUSTOM_VENDOR_ID) {
+				if (item.type == "vendor" && parseInt(item.vendorId,10) >= MIN_CUSTOM_VENDOR_ID) {
 					// Se sobreescribe el id con el vendor id para hacer mas facil el resto del código.
 					// Esto luego hay que gestionarlo al escribir o leer los customPurposes.
 					item._id = item.id;
 					//item.id=item.vendorId;
 					this.customVendors.push(item);
 					if (consentData.selectedCustomPurposeIds.has(item.id))
-						this.customVendorsEnabled.add(parseInt(item.vendorId));
+						this.customVendorsEnabled.add(parseInt(item.vendorId,10));
 					return false;
 				}
 				return true;
