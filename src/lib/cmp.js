@@ -176,7 +176,22 @@ export default class Cmp {
 			this.app.toggleConsentToolShowing(show);
 			callback(show);
 		},
-
+		SMC_SetupDFP: (CONST_DFP_ID,callback=() => {}) =>{
+			if (top.googletag===undefined) {
+				top.googletag = {cmd: []};
+			}
+			else
+			{
+				if (top.googletag.display !== undefined) {
+					top.SMC_SetupDFP(CONST_DFP_ID);
+				}
+				else
+				{
+					top.googletag.cmd.unshift(()=>{top.SMC_SetupDFP(CONST_DFP_ID);});
+				}
+			}
+			callback();
+		},
 		/**
 		 * Trigger the consent tool UI to be shown (popup)
 		 */

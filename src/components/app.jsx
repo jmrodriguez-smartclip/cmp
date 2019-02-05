@@ -33,7 +33,7 @@ export default class App extends Component {
 
 
 	onChangeDetailsPanel = panelIndex => {
-		this.props.store.toggleModalShowing(true);
+		this.toggleModalShowing(true);
 		this.setState({
 			selectedDetailsPanelIndex: Math.max(0, panelIndex)
 		});
@@ -52,7 +52,7 @@ export default class App extends Component {
 		// each purpose they inspect.
 		if (!created &&
 			!visitedPurposes[purposeItem.id]) {
-			selectAllVendors(false, purposeItem.id);
+			selectAllVendors(false, purposeItem);
 		}
 		this.setState({
 			visitedPurposes: {
@@ -61,7 +61,7 @@ export default class App extends Component {
 			}
 		});
 
-		store.toggleModalShowing(true);
+		this.toggleModalShowing(true);
 		this.setState({
 			selectedPurposeDetails: purposeItem,
 			selectedDetailsPanelIndex: SECTION_VENDORS
@@ -133,6 +133,8 @@ export default class App extends Component {
 						selectedPurposeDetails={selectedPurposeDetails}/>
 					:
 					<Banner isShowing={isBannerShowing}
+								 controller={this}
+								 store={store}
 								 isModalShowing={isModalShowing}
 								 onSave={this.onSave}
 								 onShowModal={toggleModalShowing}

@@ -46,6 +46,7 @@ export default class Summary extends Component {
 	handlePurposeChange = (customPurpose) => {
 		return (dataId, isSelected) => {
 			this.props.store.selectAllVendors(isSelected, customPurpose);
+			//this.props.store.selectPurpose(customPurpose,isSelected);
 		};
 	};
 	handleCustomPurposeChange = (customPurpose) => {
@@ -69,7 +70,8 @@ export default class Summary extends Component {
 		const {
 			textColor,
 			dividerColor,
-			textLinkColor
+			textLinkColor,
+			textLightColor
 		} = props.theme;
 		return (
 			<div>
@@ -83,7 +85,7 @@ export default class Summary extends Component {
 					{customPurposes.map((item) => (
 						<div>
 							<div class={style.purposeItem}>
-								<span className={style.purposeTitle} style={{color: textColor}}>
+								<span className={style.purposeTitle} style={{color: textLightColor}}>
 									{item.name}
 								</span>
 								<span>
@@ -134,8 +136,6 @@ export default class Summary extends Component {
 			purposeItem.help = purposeItem.description;
 			purposeItem.helpIndex = idx;
 		});
-
-
 
 		return (
 			<div class={style.summary}>

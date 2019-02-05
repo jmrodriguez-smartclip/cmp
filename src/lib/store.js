@@ -308,7 +308,9 @@ export default class Store {
 				this.vendorConsentData.selectedVendorIds[operation](vendor.id);
 			}
 		});
-
+		// Como todos los custom vendors requieren todos los propositos, sea cual sea el proposito (byPurpose),
+		// se activan o desactivan todos los customVendors. Los customVendors son custom purposes, por eso se
+		// llama a selectCustomPurpose.
 		this.customVendors.map((item) => this.selectCustomPurpose(item._id, isSelected));
 		this.storeUpdate();
 	};

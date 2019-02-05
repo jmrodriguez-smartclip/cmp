@@ -36,16 +36,24 @@
 				return cmp;
 			}());
 			window.__cmp.config = {
+				//uimode:"non-modal",
+				//position:"bottom",
 				storePublisherData: true,
 				customPurposeListLocation: 'docs/purposes.json',
 				cookieAge: 60 * 60 * 24 * 10,
 				cookieVersion: 3,
 				localization:
 					{
+						en:{
+							banner:{
+								title: '<div style="background-color:#F0F0F0">HOOOLA</div>',
+								description:'<div style="font-size:14px"><div style="margin-top:4px;">We use our own cookies and third parties ones to analyse our service, measure audiences, personalise content we offer and show ads according your interests, through data we get from those cookies about your navigation habits to profile interest groups. We can use external data sources too to elaborate those interests groups and share your navigation habits and inferred interests with third parties with the same purposes of content and advertising personalization. You can accept the use of cookies or configure your preferences in the two buttons below:</div></div>'
+							}
+						},
 						es: {
 							banner: {
 								title: '<div style="background-color:#F0F0F0">Bienvenido a <img src="http://publishers.smartclip-services.com/wp-content/uploads/2018/04/Smartnews-1.png" width="150" style="position:relative;top:2px;left:6px"></div>',
-								description: '<div style="font-size:14px"><div style="margin-top:4px;">La web donde informar a nuestros publishers de las últimas novedades en nuestra red, noticias sobre publicidad digital, y resolver dudas de integración de nuestros formatos.</div><div style="margin-top:10px">Para construir esta web, utilizamos servicios de terceros para medición y personalización de contenido y publicidad.<br>Puedes dar permiso para el uso de estos servicios, o establecer tus preferencias en la página de configuración de privacidad.  </div></div>',
+								description : '<div style="font-size:14px"><div style="margin-top:4px;">Para el correcto funcionamiento de nuestra web, nosotros y algunos de nuestros third parties, establecemos cookies y accedemos o almacenamos información en tu dispositivo, para propósitos como analítica, personalización de contenido y/o personalización de la  publicidad.<br><br>Puedes personalizar tu consentimiento a dichos propósitos, usando el botón "Configuración."</div></div>',
 								links: {
 									manage: 'Configuración',
 									accept: 'Aceptar'
@@ -128,14 +136,14 @@
 					},
 				theme:
 					{
-						overlayBackground: "#FF0",
-						primaryColor: "blue",
+						overlayBackground: "black",
+						primaryColor: "#4FAFBB",
 						primaryTextColor: "white",
-						secondaryColor: "green",
-						secondaryTextColor: "",
-						textLinkColor: "yellow",
+						secondaryColor: "white",
+						secondaryTextColor: "#4FAFBB",
+						textLinkColor: "#4FAFBB",
 						backgroundColor: "white",
-						textColor: "",
+						textColor: "green",
 						textLightColor: "",
 						dividerColor: ""
 					}
@@ -156,14 +164,15 @@
 	</script>
 
 	<script src="<%= htmlWebpackPlugin.files.js %>"></script>
-	<script src='https://www.googletagservices.com/tag/js/gpt.js'></script>
 	<script>
 		var googletag = googletag || {};
 		googletag.cmd = googletag.cmd || [];
-		googletag.cmd.push(function () {
-
-			SMC_SetupDFP();
+		__cmp("SMC_SetupDFP",null,function(){
+			var sc=document.createElement("script");
+			sc.src='https://www.googletagservices.com/tag/js/gpt.js';
+			document.body.appendChild(sc);
 		});
+
 
 		googletag.cmd.push(function () {
 			googletag.defineSlot('/5555/smartclip.testjose.es/jose_test_320x250', [[320, 250]], 'div-gpt-ad-1520354760622-0').addService(googletag.pubads());
@@ -172,6 +181,7 @@
 	</script>
 </head>
 <body>
+<h1>Este es el background</h1>
 <div id='div-gpt-ad-1520354760622-0'>
 	<script>
 

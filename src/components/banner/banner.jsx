@@ -48,7 +48,7 @@ export default class Banner extends Component {
 	};
 
 	handleLearnMore = () => {
-		this.props.onShowModal(true);
+		this.props.controller.toggleModalShowing(true);
 	};
 
 	handlePurposeItemClick = purposeItem => {
@@ -105,69 +105,7 @@ export default class Banner extends Component {
 								When you visit our site, pre-selected companies may access and use certain information
 								on your device to serve relevant ads or personalized content.
 							</LocalLabel>
-							<div class={style.options}>
-								<div
-									class={[style.option, selectedPanelIndex === PANEL_COLLECTED && isExpanded ? style.expanded : ''].join(' ')}>
-									<a
-										onClick={this.handleInfo(PANEL_COLLECTED)}
-										class={style.detailExpand}
-									>
-										<ChevronIcon color={textLinkColor}/>
-										<LocalLabel localizeKey='links.data.title'>Information that may be
-											used
-										</LocalLabel>
-									</a>
-									<div
-										className={style.optionDetails}
-										style={{ color: textLightColor }}
-									>
-										<LocalLabel localizeKey='links.data.description'>
-											<ul>
-												<li>Type of browser and its settings</li>
-												<li>Information about the device's operating system</li>
-												<li>Cookie information</li>
-												<li>Information about other identifiers assigned to the device</li>
-												<li>The IP address from which the device accesses a client's website or
-													mobile application
-												</li>
-												<li>Information about the user's activity on that device, including web
-													pages and mobile apps visited or used
-												</li>
-												<li>Information about the geographic location of the device when it
-													accesses
-													a website or mobile application
-												</li>
-											</ul>
-										</LocalLabel>
-									</div>
-								</div>
-								<div
-									class={[style.option, selectedPanelIndex === PANEL_PURPOSE && isExpanded ? style.expanded : ''].join(' ')}>
-									<a
-										onClick={this.handleInfo(PANEL_PURPOSE)}
-										class={style.detailExpand}
-									>
-										<ChevronIcon color={textLinkColor} />
-										<LocalLabel localizeKey='links.purposes.title'>Purposes for storing
-											information</LocalLabel>
-									</a>
 
-									<div
-										class={style.optionDetails}
-										style={{ color: textLightColor }}
-									>
-										<ul>
-											{purposes.map((purposeItem, index) => (
-												<li class={style.purposeItem}>
-													<a class={style.learnMore} onClick={this.handlePurposeItemClick(purposeItem)} style={{color: textLinkColor}}>
-														<PurposesLabel localizeKey={`purpose${purposeItem.id}.menu`}>{purposeItem.name}</PurposesLabel>
-													</a>
-												</li>
-											))}
-										</ul>
-									</div>
-								</div>
-							</div>
 						</div>
 						<div class={style.consent}>
 							<a class={style.learnMore} onClick={this.handleLearnMore}

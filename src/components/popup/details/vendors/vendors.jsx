@@ -5,7 +5,7 @@ import Switch from '../../../switch/switch';
 import Label from "../../../label/label";
 import MIN_CUSTOM_VENDOR_ID from "../../../../lib/store";
 
-//import ExternalLinkIcon from '../../../externallinkicon/externallinkicon'
+import ExternalLinkIcon from '../../../externallinkicon/externallinkicon'
 
 class VendorsLabel extends Label {
 	static defaultProps = {
@@ -119,15 +119,15 @@ export default class Vendors extends Component {
 							{validVendors.map(({id, name, purposeIds, policyUrl, policyUrlDisplay}, index) => (
 								<tr key={id} class={index % 2 === 0 ? style.even : ''}>
 									<td>
-										<div class={style.vendorName}>
+										<div class={style.vendorName} style={{color:textLightColor}}>
 											{name}
 											<a href={policyUrl} class={style.policy} style={{ color: textLinkColor}} target='_blank'><ExternalLinkIcon color={textLinkColor} /></a>
 										</div>
 									</td>
-									<td class={style.allowColumn}>
+									<td class={style.allowColumn} style={{color:textLightColor}}>
 										{purposeIds.indexOf(selectedPurposeDetails.id) > -1 ?
 											<span class={style.allowSwitch}>
-												<VendorsLabel localizeKey='accept'>Allow</VendorsLabel> <Switch
+												<Switch
 													color={primaryColor}
 													dataId={id}
 													isSelected={selectedVendorIds.has(id)}
@@ -138,13 +138,6 @@ export default class Vendors extends Component {
 										}
 									</td>
 
-									<td>
-										<a href={policyUrl} class={style.policy} target='_blank'>
-											<div class={style.vendorName}>
-												{name}
-											</div>
-										</a>
-									</td>
 
 								</tr>
 							))}

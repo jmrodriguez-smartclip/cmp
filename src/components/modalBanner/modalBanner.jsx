@@ -4,6 +4,7 @@ import Label from '../label/label';
 import Panel from '../panel/panel';
 import ChevronIcon from '../chevronicon/chevronicon';
 import config from '../../lib/config';
+import Button from "../button/button";
 
 class LocalLabel extends Label {
 	static defaultProps = {
@@ -67,6 +68,9 @@ export default class ModalBanner extends Component {
 			textColor,
 			textLightColor,
 			textLinkColor,
+			overlayBackground,
+			secondaryColor,
+			secondaryTextColor
 		} = props.theme;
 
 		let dispositionStyle = style.content + " " + style["content-" + config.position];
@@ -78,6 +82,7 @@ export default class ModalBanner extends Component {
 
 				<div
 					class={style.overlay}
+					style={{background: overlayBackground}}
 					onClick={this.handleClose}
 				/>
 				<div class={dispositionStyle} id="cmp-main-message"
@@ -87,10 +92,10 @@ export default class ModalBanner extends Component {
 						class={style.message}
 						ref={el => this.messageRef = el}
 					>
-						<div class={style.title} style={{backgroundColor: backgroundColor, color: textColor}}>
+						<div class={style.title} style={{backgroundColor: backgroundColor, color: textLightColor}}>
 							<LocalLabel localizeKey='title'>Ads help us run this site</LocalLabel>
 						</div>
-						<div class={style.messageContents}>
+						<div class={style.messageContents} style={{color:textLightColor}}>
 							<LocalLabel localizeKey='description'>
 								When you visit our site, pre-selected companies may access and use certain information
 								on
@@ -99,13 +104,27 @@ export default class ModalBanner extends Component {
 						</div>
 						<div className={style.info}>
 							<span class={style.learnMore}>
-								<a className={style.popuplink} onClick={this.handleLearnMore}><LocalLabel localizeKey='links.manage'>Learn
-									More</LocalLabel>
-								</a>
+							<Button
+								class={style.rejectAll}
+								invert={true}
+								onClick={this.handleLearnMore}
+								backgroundColor={secondaryColor}
+								textColor={secondaryTextColor}
+							>
+								<LocalLabel localizeKey='links.manage'>Learn more</LocalLabel>
+							</Button>
 							</span>
 							<span class={style.accept}>
-								<a className={style.popuplink} onClick={callMe}><LocalLabel localizeKey='links.accept'>Continue to site</LocalLabel></a>
+							<Button
+								class={style.acceptAll}
+								onClick={callMe}
+								backgroundColor={primaryColor}
+								textColor={primaryTextColor}
+							>
+								<LocalLabel localizeKey='links.accept'>Continue to site</LocalLabel>
+							</Button>
 							</span>
+
 						</div>
 						{/* <div class={style.infoData}>
 							<span class={style.infoSpan}>

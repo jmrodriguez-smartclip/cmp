@@ -22,9 +22,10 @@ export default class Intro extends Component {
 		const {
 			onAcceptAll,
 			onShowPurposes,
-			onClose
+			onClose,
+			theme
 		} = props;
-
+		const {primaryColor,primaryTextColor,overlayBackground, secondaryColor, secondaryTextColor,backgroundColor} = theme;
 		return (
 			<div class={style.intro}>
 				<CloseButton
@@ -42,12 +43,16 @@ export default class Intro extends Component {
 						class={style.rejectAll}
 						invert={true}
 						onClick={onShowPurposes}
+						backgroundColor={secondaryColor}
+						textColor={secondaryTextColor}
 					>
 						<LocalLabel localizeKey='showPurposes'>Manage your choices</LocalLabel>
 					</Button>
 					<Button
 						class={style.acceptAll}
 						onClick={onAcceptAll}
+						backgroundColor={primaryColor}
+						textColor={primaryTextColor}
 					>
 						<LocalLabel localizeKey='acceptAll'>Got it, thanks!</LocalLabel>
 					</Button>
