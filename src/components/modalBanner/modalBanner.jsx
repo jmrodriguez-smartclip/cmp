@@ -97,9 +97,7 @@ export default class ModalBanner extends Component {
 						</div>
 						<div class={style.messageContents} style={{color:textLightColor}}>
 							<LocalLabel localizeKey='description'>
-								When you visit our site, pre-selected companies may access and use certain information
-								on
-								your device to serve relevant ads or personalized content.
+								We use our own cookies and third parties ones to analyse our service, measure audiences, personalise content we offer and show ads according your interests, through data we get from those cookies about your navigation habits to profile interest groups. We can use external data sources too to elaborate those interests groups and share your navigation habits and inferred interests with third parties with the same purposes of content and advertising personalization. You can accept the use of cookies or configure your preferences in the two buttons below:
 							</LocalLabel>
 						</div>
 						<div className={style.info}>

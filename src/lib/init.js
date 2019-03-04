@@ -11,17 +11,91 @@ import config from './config';
 const CMP_VERSION = 1;
 
 // CMP_ID is the ID of your consent management provider according to the IAB. Get an ID here: https://advertisingconsent.eu/cmps/
-const CMP_ID = 0;
+const CMP_ID = 215;
 
 // The cookie specification version, as determined by the IAB. Current is 1.
 const COOKIE_VERSION = 1;
 export const COOKIE_VERSION_COOKIE_NAME = "_pubVersion_";
+
+function addFrame() {
+
+	if (!window.frames['__cmpLocator']) {
+
+		if (document.body) {
+
+			let body = document.body,
+
+				iframe = document.createElement('iframe');
+
+			iframe.style = 'display:none';
+
+			iframe.name = '__cmpLocator';
+
+			body.appendChild(iframe);
+
+		} else {
+
+			// In the case where this stub is located in the head,
+
+			// this allows us to inject the iframe more quickly than
+
+			// relying on DOMContentLoaded or other events.
+
+			setTimeout(addFrame, 5);
+
+		}
+	}
+
+}
+
+// Agregamos esto aqui, ya que no esta en algunos stubs: recibir requests pasadas como cadena de texto.
+function cmpMsgHandler(event) {
+
+	let msgIsString = typeof event.data === "string";
+	if(!msgIsString)
+		return;
+	let json="";
+	try {
+		json = JSON.parse(event.data);
+	}
+	catch(e){return;}
+
+	if (json.__cmpCall) {
+
+		let i = json.__cmpCall;
+
+		window.__cmp(i.command, i.parameter, function(retValue, success) {
+
+			let returnMsg = {"__cmpReturn": {
+					"returnValue": retValue,
+
+					"success": success,
+
+					"callId": i.callId
+
+				}};
+
+			event.source.postMessage(msgIsString ?
+
+				JSON.stringify(returnMsg) : returnMsg, '*');
+
+		});
+
+	}
+
+}
 
 export function init(configUpdates) {
 	config.update(configUpdates);
 	log.debug('Using configuration:', config);
 	const startTime = Date.now();
 	let cmp = null;
+	addFrame();
+	if (window.addEventListener)
+
+		window.addEventListener('message', cmpMsgHandler, false);
+
+	else window.attachEvent('onmessage', cmpMsgHandler);
 
 	global.SMC_SetupDFP = function (CONST_DFP_ID) {
 		if (CONST_DFP_ID == undefined)
