@@ -49,7 +49,7 @@ export default class Vendors extends Component {
 	handleToggleAll = () => {
 		const { id: selectedPurposeId } = this.props.selectedPurposeDetails;
 		const {isSelectAll} = this.state;
-		this.props.selectAllVendors(isSelectAll, selectedPurposeId);
+		this.props.selectAllVendors(isSelectAll, {id:selectedPurposeId});
 		this.setState({isSelectAll: !isSelectAll});
 	};
 
