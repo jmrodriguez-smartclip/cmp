@@ -2,7 +2,7 @@ import { h, render } from 'preact';
 import Promise from 'promise-polyfill';
 import Store from './store';
 import Cmp, { CMP_GLOBAL_NAME } from './cmp';
-import {readVendorConsentCookie, readPublisherConsentCookie, readCookie} from './cookie/cookie';
+import {readVendorConsentCookie, readPublisherConsentCookie} from './cookie/cookie';
 import { fetchPubVendorList, fetchGlobalVendorList, fetchPurposeList } from './vendor';
 import log from './log';
 import pack from '../../package.json';
@@ -15,7 +15,8 @@ const CMP_ID = 215;
 
 // The cookie specification version, as determined by the IAB. Current is 1.
 const COOKIE_VERSION = 1;
-export const COOKIE_VERSION_COOKIE_NAME = "_pubVersion_";
+
+//export const COOKIE_VERSION_COOKIE_NAME = "_pubVersion_";
 
 function addFrame() {
 
@@ -98,6 +99,7 @@ export function init(configUpdates) {
 	else window.attachEvent('onmessage', cmpMsgHandler);
 
 	global.SMC_SetupDFP = function (CONST_DFP_ID) {
+
 		if (CONST_DFP_ID == undefined)
 			CONST_DFP_ID = 10000;
 		let DFP_CONSENTS_VALUE = null;
@@ -172,7 +174,7 @@ export function init(configUpdates) {
 			if (vendorConsentData === undefined) {
 				top.__cmp('showConsentTool');
 			}
-			else {
+			/*else {
 				let pubCookieVersion = readCookie(COOKIE_VERSION_COOKIE_NAME);
 				if (pubCookieVersion === undefined) {
 					top.__cmp('showConsentTool');
@@ -181,7 +183,7 @@ export function init(configUpdates) {
 					if (parseInt(pubCookieVersion, 10) < config.cookieVersion)
 						top.__cmp('showConsentTool');
 				}
-			}
+			}*/
 			// Pull queued command from __cmp stub
 			const {commandQueue = []} = window[CMP_GLOBAL_NAME] || {};
 

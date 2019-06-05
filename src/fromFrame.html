@@ -3,6 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script>
+		// find the CMP frame
+
+		var f = window;
+
+		var cmpFrame;
+
+		while (!cmpFrame) {
+
+			try {
+
+				if (f.frames["__cmpLocator"]) cmpFrame = f;
+
+			} catch (e) {
+			}
+
+			if (f === window.top) break;
+
+			f = f.parent;
+
+		}
+
+		var cmpCallbacks = {};
+
+		/* Set up a __cmp function to do the postMessage and
+
+           stash the callback.
+
+           This function behaves (from the caller's perspective)
+
+           identically to the in-frame __cmp call */
+
+		window.__cmp = function (cmd, arg, callback) {
+
+			if (!cmpFrame) {
+
+				callback({msg: "CMP not found"}, false);
+
+				return;
+
+			}
+
+			var callId = Math.random() + "";
+
+			var msg = {
+				__cmpCall: {
+
+					command: cmd,
+
+					parameter: arg,
+
+					callId: callId
+
+				}
+			};
+
+			cmpCallbacks[callId] = callback;
+
+			cmpFrame.postMessage(msg, '*');
+
+		};
+
+		/* when we get the return message, call the stashed callback */
+
+		window.addEventListener("message", function (event) {
+
+			var json = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
+
+			if (json.__cmpReturn) {
+				var i = json.__cmpReturn;
+
+				cmpCallbacks[i.callId](i.returnValue, i.success);
+
+				delete cmpCallbacks[i.callId];
+
+			}
+
+		}, false);
+
+		/* example call of the above __cmp wrapper function */
+
+		__cmp("getVendorConsents", null, function (val, success) {
+
+			console.log("val=", val, " success=", success);
+
+		});
+    </script>
 </head>
 <body>
 

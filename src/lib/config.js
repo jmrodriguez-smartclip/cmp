@@ -8,6 +8,7 @@ const defaultConfig = {
 	globalVendorListLocation: 'https://vendorlist.consensu.org/vendorlist.json',
 	globalConsentLocation: './portal.html',
 	storeConsentGlobally: false,
+	storePublisherConsentGlobally: false,
 	storePublisherData: false,
 	logging: false,
 	cookieAge: null,

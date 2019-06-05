@@ -2,7 +2,7 @@ import {writePublisherConsentCookie, writeVendorConsentCookie, writeCookie} from
 import config from './config';
 import { findLocale } from './localize';
 
-import {COOKIE_VERSION_COOKIE_NAME} from "init";
+//import {COOKIE_VERSION_COOKIE_NAME} from "init";
 /**
  * Copy a data object and make sure to replace references
  * of Set objects with new ones.
@@ -226,7 +226,7 @@ export default class Store {
 			vendorListVersion = 1
 		} = vendorList || {};
 		// Se escribe la cookie de la version de cookie
-		writeCookie(COOKIE_VERSION_COOKIE_NAME, config.cookieVersion, 365 * 24 * 60 * 60);
+		//writeCookie(COOKIE_VERSION_COOKIE_NAME, config.cookieVersion, 365 * 24 * 60 * 60);
 
 		// Update modification dates and write the cookies
 		const now = new Date();

@@ -216,7 +216,49 @@ function writeCookie(name, value, maxAgeSeconds, path = '/') {
 	document.cookie = `${name}=${value}${domain};path=${path}${maxAge}`;
 }
 
-function readPublisherConsentCookie() {
+
+/**
+ * Read publisher consent data from third-party cookie on the
+ * global vendor list domain.
+ *
+ * @returns Promise resolved with decoded cookie object
+ */
+function readGlobalPublisherConsentCookie() {
+	log.debug('Request consent data from global cookie');
+	return sendPortalCommand({
+		command: 'readCookie',
+		cookieName: PUBLISHER_CONSENT_COOKIE_NAME
+	}).then(result => {
+		log.debug('Read consent data from global cookie', result);
+		if (result) {
+			return decodePublisherConsentData(result);
+		}
+	}).catch(err => {
+		log.error('Failed reading global publisher consent cookie', err);
+	});
+}
+
+/**
+ * Write publisher consent data to third-party cookie on the
+ * global vendor list domain.
+ *
+ * @returns Promise resolved after cookie is written
+ */
+function writeGlobalPublisherConsentCookie(publisherConsentData) {
+	log.debug('Write consent data to global cookie', publisherConsentData);
+	return sendPortalCommand({
+		command: 'writeCookie',
+		cookieName: PUBLISHER_CONSENT_COOKIE_NAME,
+		cookieValue: encodePublisherConsentData(publisherConsentData),
+		publisherConsentData,
+		cmpVersion: pack.version
+	}).catch(err => {
+		log.error('Failed writing global publisher consent cookie', err);
+	});
+}
+
+
+function readLocalPublisherConsentCookie() {
 	// If configured try to read publisher cookie
 	if (config.storePublisherData) {
 		const cookie = readCookie(PUBLISHER_CONSENT_COOKIE_NAME);
@@ -227,12 +269,22 @@ function readPublisherConsentCookie() {
 	}
 }
 
-function writePublisherConsentCookie(publisherConsentData) {
+function writeLocalPublisherConsentCookie(publisherConsentData) {
 	log.debug('Write publisher consent data to local cookie', publisherConsentData);
 	writeCookie(PUBLISHER_CONSENT_COOKIE_NAME,
 		encodePublisherConsentData(publisherConsentData),
 		config.cookieAge != null ? config.cookieAge : PUBLISHER_CONSENT_COOKIE_MAX_AGE,
 		'/');
+}
+
+function readPublisherConsentCookie() {
+	return (config.storeConsentGlobally && config.storePublisherConsentGlobally) ?
+		readGlobalPublisherConsentCookie() : readLocalPublisherConsentCookie();
+}
+
+function writePublisherConsentCookie(publisherConsentData) {
+	return (config.storePublisherData && config.storeConsentGlobally && config.storePublisherConsentGlobally) ?
+		writeGlobalPublisherConsentCookie(publisherConsentData) : writeLocalPublisherConsentCookie(publisherConsentData);
 }
 
 
@@ -309,6 +361,7 @@ function writeVendorConsentCookie(vendorConsentData) {
 	return config.storeConsentGlobally ?
 		writeGlobalVendorConsentCookie(vendorConsentData) : writeLocalVendorConsentCookie(vendorConsentData);
 }
+
 
 export {
 	readCookie,

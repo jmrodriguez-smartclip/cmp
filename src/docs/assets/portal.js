@@ -42,6 +42,12 @@ const commands = {
 
 	writeVendorConsent: ({encodedValue}) => {
 		return writeCookie({name: COOKIE_NAME, value: encodedValue});
+	},
+	readCookie: ({cookieName}) => {
+		return readCookie(cookieName);
+	},
+	writeCookie: ({cookieName, cookieValue}) => {
+		return writeCookie({name: cookieName, value: cookieValue});
 	}
 };
 

@@ -5,7 +5,17 @@
 	<title>GDPR Documentation</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimal-ui">
 	<meta name="apple-mobile-web-app-capable" content="yes">
-	<script>
+</head>
+<body>
+<h1>Este es el background</h1>
+<div id='div-gpt-ad-1520354760622-0'>
+
+</div>
+<iframe src="fromFrame.html">
+
+</iframe>
+
+<script>
 		(function (window) {
 			window.__cmp = (function () {
 				var listen = window.attachEvent || window.addEventListener;
@@ -39,6 +49,10 @@
 				//uimode:"non-modal",
 				//position:"bottom",
 				storePublisherData: true,
+				storeConsentGlobally: true,
+				storePublisherConsentGlobally: true,
+				//globalConsentLocation:'http://localtests.com:8080/docs/portal.html',
+				globalConsentLocation: 'http://richmediatests.com:8080/docs/portal.html',
 				customPurposeListLocation: 'docs/purposes.json',
 				cookieAge: 60 * 60 * 24 * 10,
 				cookieVersion: 3,
@@ -178,21 +192,11 @@
 			googletag.defineSlot('/5555/smartclip.testjose.es/jose_test_320x250', [[320, 250]], 'div-gpt-ad-1520354760622-0').addService(googletag.pubads());
 			googletag.enableServices();
 		});
-	</script>
-</head>
-<body>
-<h1>Este es el background</h1>
-<div id='div-gpt-ad-1520354760622-0'>
-	<script>
 
 		googletag.cmd.push(function () {
 			googletag.display('div-gpt-ad-1520354760622-0');
 		});
 	</script>
-</div>
-<iframe src="fromFrame.html">
-
-</iframe>
 
 </body>
 </html>
